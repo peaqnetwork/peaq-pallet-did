@@ -4,10 +4,10 @@ version = "0.0.1"
 edition = "2021"
 description = 'A pallet that handles peaq DID managment on peaq network.'
 authors = ['peaq network <https://github.com/peaqnetwork>']
-homepage = 'https://github.com/peaqnetwork/peaq-pallet-did/'
+homepage = 'https://peaq.network/'
 license = 'Apache-2.0'
 publish = false
-repository = 'https://github.com/peaqnetwork/peaq-pallet-did.git'
+repository = 'https://github.com/peaqnetwork/peaq-pallet-did/'
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
