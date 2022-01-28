@@ -137,5 +137,5 @@ For the purpose of simplicity and MVP v1 requirements, Authentication and Author
 
 ## License
 
-[Apache 2.0](https://choosealicense.com/licenses/apache-2.0/)
+[Apache-2.0](https://choosealicense.com/licenses/apache-2.0/)
 
