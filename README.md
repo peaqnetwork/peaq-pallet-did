@@ -1,0 +1,1 @@
+# peaq-pallet-did
