@@ -27,19 +27,19 @@ version = '2.0.0'
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 optional = true
-branch = 'peaq-polkadot-v0.9.13'
+branch = 'moonbeam-polkadot-v0.9.16'
 version = '4.0.0-dev'
 
 [dependencies.frame-support]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'
+branch = 'moonbeam-polkadot-v0.9.16'
 version = '4.0.0-dev'
 
 [dependencies.frame-system]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'
+branch = 'moonbeam-polkadot-v0.9.16'
 version = '4.0.0-dev'
 
 [dependencies.scale-info]
@@ -50,31 +50,31 @@ version = '1.0'
 [dependencies.sp-runtime]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'
-version = '4.0.0-dev'
+branch = 'moonbeam-polkadot-v0.9.16'
+version = '4.1.0-dev'
 
 [dependencies.sp-core]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'
-version = '4.0.0-dev'
+branch = 'moonbeam-polkadot-v0.9.16'
+version = '4.1.0-dev'
 
 [dependencies.sp-io]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'
+branch = 'moonbeam-polkadot-v0.9.16'
 version = '4.0.0-dev'
 
 [dependencies.sp-std]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'  # or the latest monthly
+branch = 'moonbeam-polkadot-v0.9.16'  # or the latest monthly
 version = '4.0.0-dev'    # or the latest version
 
 [dependencies.pallet-timestamp]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.13'  # or the latest monthly
+branch = 'moonbeam-polkadot-v0.9.16'  # or the latest monthly
 version = '4.0.0-dev'    # or the latest version
 
 [features]
