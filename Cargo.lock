@@ -58,9 +58,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.53"
+version = "1.0.54"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94a45b455c14666b85fc40a019e8ab9eb75e3a124e05494f5397122bc9eb06e0"
+checksum = "7a99269dff3bc004caa411f38845c20303f1e393ca2bd6581576fa3a7f59577d"
 
 [[package]]
 name = "approx"
@@ -470,7 +470,7 @@ dependencies = [
 [[package]]
 name = "frame-benchmarking"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -503,7 +503,7 @@ dependencies = [
 [[package]]
 name = "frame-support"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "bitflags",
  "frame-metadata",
@@ -532,7 +532,7 @@ dependencies = [
 [[package]]
 name = "frame-support-procedural"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "Inflector",
  "frame-support-procedural-tools",
@@ -544,7 +544,7 @@ dependencies = [
 [[package]]
 name = "frame-support-procedural-tools"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "frame-support-procedural-tools-derive",
  "proc-macro-crate",
@@ -556,7 +556,7 @@ dependencies = [
 [[package]]
 name = "frame-support-procedural-tools-derive"
 version = "3.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -566,7 +566,7 @@ dependencies = [
 [[package]]
 name = "frame-system"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "frame-support",
  "log",
@@ -892,9 +892,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.118"
+version = "0.2.119"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06e509672465a0504304aa87f9f176f2b2b716ed8fb105ebe5c02dc6dce96a94"
+checksum = "1bf2e165bb3457c8e098ea76f3e3bc9db55f87aa90d52d0e6be741470916aaa4"
 
 [[package]]
 name = "libm"
@@ -1179,7 +1179,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "pallet-timestamp"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -1741,7 +1741,7 @@ checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 [[package]]
 name = "sp-api"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "hash-db",
  "log",
@@ -1758,7 +1758,7 @@ dependencies = [
 [[package]]
 name = "sp-api-proc-macro"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "blake2-rfc",
  "proc-macro-crate",
@@ -1770,7 +1770,7 @@ dependencies = [
 [[package]]
 name = "sp-application-crypto"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "parity-scale-codec",
  "scale-info",
@@ -1783,7 +1783,7 @@ dependencies = [
 [[package]]
 name = "sp-arithmetic"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "integer-sqrt",
  "num-traits",
@@ -1798,7 +1798,7 @@ dependencies = [
 [[package]]
 name = "sp-core"
 version = "4.1.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "base58",
  "bitflags",
@@ -1846,7 +1846,7 @@ dependencies = [
 [[package]]
 name = "sp-core-hashing"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "blake2-rfc",
  "byteorder",
@@ -1859,7 +1859,7 @@ dependencies = [
 [[package]]
 name = "sp-core-hashing-proc-macro"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1870,7 +1870,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1880,7 +1880,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.10.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -1891,7 +1891,7 @@ dependencies = [
 [[package]]
 name = "sp-inherents"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "async-trait",
  "impl-trait-for-tuples",
@@ -1905,7 +1905,7 @@ dependencies = [
 [[package]]
 name = "sp-io"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "futures",
  "hash-db",
@@ -1929,7 +1929,7 @@ dependencies = [
 [[package]]
 name = "sp-keystore"
 version = "0.10.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -1945,7 +1945,7 @@ dependencies = [
 [[package]]
 name = "sp-panic-handler"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "backtrace",
  "lazy_static",
@@ -1955,7 +1955,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime"
 version = "4.1.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "either",
  "hash256-std-hasher",
@@ -1977,7 +1977,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "4.1.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "impl-trait-for-tuples",
  "parity-scale-codec",
@@ -1994,7 +1994,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -2006,7 +2006,7 @@ dependencies = [
 [[package]]
 name = "sp-staking"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "parity-scale-codec",
  "scale-info",
@@ -2017,7 +2017,7 @@ dependencies = [
 [[package]]
 name = "sp-state-machine"
 version = "0.10.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "hash-db",
  "log",
@@ -2040,12 +2040,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 
 [[package]]
 name = "sp-storage"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -2058,7 +2058,7 @@ dependencies = [
 [[package]]
 name = "sp-timestamp"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "async-trait",
  "futures-timer",
@@ -2074,7 +2074,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -2086,7 +2086,7 @@ dependencies = [
 [[package]]
 name = "sp-trie"
 version = "4.0.0"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "hash-db",
  "memory-db",
@@ -2101,7 +2101,7 @@ dependencies = [
 [[package]]
 name = "sp-version"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -2118,7 +2118,7 @@ dependencies = [
 [[package]]
 name = "sp-version-proc-macro"
 version = "4.0.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "parity-scale-codec",
  "proc-macro2",
@@ -2129,7 +2129,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "4.1.0-dev"
-source = "git+https://github.com/peaqnetwork/substrate?branch=moonbeam-polkadot-v0.9.16#355a422dbe751fb6b798fb453dd32123d4ee1b3d"
+source = "git+https://github.com/peaqnetwork/substrate?branch=peaq-polkadot-v0.9.16#570b21a17d9ab06d8508180c98ad2c476ebcec6f"
 dependencies = [
  "impl-trait-for-tuples",
  "log",
@@ -2140,9 +2140,9 @@ dependencies = [
 
 [[package]]
 name = "ss58-registry"
-version = "1.14.0"
+version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8cb4b9ce18beb6cb16ecad62d936245cef5212ddc8e094d7417a75e8d0e85f5"
+checksum = "2f9799e6d412271cb2414597581128b03f3285f260ea49f5363d07df6a332b3e"
 dependencies = [
  "Inflector",
  "proc-macro2",
@@ -2589,9 +2589,9 @@ dependencies = [
 
 [[package]]
 name = "zeroize_derive"
-version = "1.3.1"
+version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81e8f13fef10b63c06356d65d416b070798ddabcadc10d3ece0c5be9b3c7eddb"
+checksum = "3f8f187641dad4f680d25c4bfc4225b418165984179f26ca76ec4fb6441d3a17"
 dependencies = [
  "proc-macro2",
  "quote",
