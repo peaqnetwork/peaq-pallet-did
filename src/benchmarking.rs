@@ -6,6 +6,7 @@ use super::*;
 use crate::Pallet as DID;
 use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, account};
 use frame_system::{Pallet as System, RawOrigin};
+use crate::structs::Attribute;
 
 /// Assert that the last event equals the provided one.
 fn assert_last_event<T: Config>(generic_event: <T as Config>::Event) {
@@ -37,7 +38,7 @@ benchmarks! {
         let name = b"id";
         let attribute = b"did:pq:1234567890";
         let new_attribute = b"did:pq:0987654321";
-        <Pallet<T>>::add_attribute(
+        <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
             name.to_vec(),
@@ -54,6 +55,49 @@ benchmarks! {
         ).into());
     }
 
+    read_attribute {
+        let caller : T::AccountId = account("Iredia1", 0, 0);
+
+        let did_account : T::AccountId = account("Iredia2", 0, 0);
+        let name = b"id";
+        let attribute = b"did:pq:1234567890";
+        <DID<T>>::add_attribute(
+            RawOrigin::Signed(caller.clone()).into(),
+            did_account.clone(),
+            name.to_vec(),
+            attribute.to_vec(),
+            None)?;
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.to_vec())
+    verify {
+        let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
+            name: name.to_vec(),
+            value: attribute.to_vec(),
+            validity: u32::max_value().into(),
+            created: T::Time::now().into(),
+        };
+        assert_last_event::<T>(Event::<T>::AttributeRead(read_attr).into());
+    }
+
+    remove_attribute {
+        let caller : T::AccountId = account("Iredia1", 0, 0);
+        let did_account : T::AccountId = account("Iredia2", 0, 0);
+        let name = b"id";
+        let attribute = b"did:pq:1234567890";
+        <DID<T>>::add_attribute(
+            RawOrigin::Signed(caller.clone()).into(),
+            did_account.clone(),
+            name.to_vec(),
+            attribute.to_vec(),
+            None)?;
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.to_vec())
+    verify {
+        assert_last_event::<T>(Event::<T>::AttributeRemoved(
+            caller.clone(),
+            did_account.clone(),
+            name.to_vec(),
+        ).into());
+    }
+
 }
 
 #[cfg(test)]
@@ -67,7 +111,7 @@ mod tests {
 }
 
 impl_benchmark_test_suite!(
-    Pallet,
+    DID,
     crate::benchmarking::tests::new_test_ext(),
     crate::mock::TestRuntime,
 );
