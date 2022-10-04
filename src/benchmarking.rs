@@ -13,65 +13,64 @@ fn assert_last_event<T: Config>(generic_event: <T as Config>::Event) {
     System::<T>::assert_last_event(generic_event.into());
 }
 
+const CALLER_ACCOUNT_STR: &str = "Iredia1";
+const DID_ACCOUNT_STR: &str = "Iredia2";
+const NAME_BYTES: &[u8; 2] = b"id";
+const ATTRITUBE_BYTES: &[u8; 17] = b"did:pq:1234567890";
+
 benchmarks! {
     add_attribute {
-        let caller : T::AccountId = account("Iredia1", 0, 0);
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
-        let did_account : T::AccountId = account("Iredia2", 0, 0);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.to_vec(), attribute.to_vec(), None)
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), ATTRITUBE_BYTES.to_vec(), None)
     verify {
         assert_last_event::<T>(Event::<T>::AttributeAdded(
             caller.into(),
             did_account.clone(),
-            name.to_vec(),
-            attribute.to_vec(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
             None,
         ).into());
     }
 
     update_attribute {
-        let caller : T::AccountId = account("Iredia1", 0, 0);
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
-        let did_account : T::AccountId = account("Iredia2", 0, 0);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
         let new_attribute = b"did:pq:0987654321";
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
-            name.to_vec(),
-            attribute.to_vec(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.to_vec(), new_attribute.to_vec(), None)
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), new_attribute.to_vec(), None)
     verify {
         assert_last_event::<T>(Event::<T>::AttributeUpdated(
             caller.clone(),
             did_account.clone(),
-            name.to_vec(),
+            NAME_BYTES.to_vec(),
             new_attribute.to_vec(),
             None,
         ).into());
     }
 
     read_attribute {
-        let caller : T::AccountId = account("Iredia1", 0, 0);
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
-        let did_account : T::AccountId = account("Iredia2", 0, 0);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
-            name.to_vec(),
-            attribute.to_vec(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.to_vec())
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec())
     verify {
         let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
-            name: name.to_vec(),
-            value: attribute.to_vec(),
+            name: NAME_BYTES.to_vec(),
+            value: ATTRITUBE_BYTES.to_vec(),
             validity: u32::max_value().into(),
             created: T::Time::now().into(),
         };
@@ -79,22 +78,20 @@ benchmarks! {
     }
 
     remove_attribute {
-        let caller : T::AccountId = account("Iredia1", 0, 0);
-        let did_account : T::AccountId = account("Iredia2", 0, 0);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
-            name.to_vec(),
-            attribute.to_vec(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.to_vec())
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec())
     verify {
         assert_last_event::<T>(Event::<T>::AttributeRemoved(
             caller.clone(),
             did_account.clone(),
-            name.to_vec(),
+            NAME_BYTES.to_vec(),
         ).into());
     }
 
