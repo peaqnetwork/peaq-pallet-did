@@ -4,17 +4,111 @@ use super::*;
 
 #[allow(unused)]
 use crate::Pallet as DID;
-use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, whitelisted_caller};
-use frame_system::RawOrigin;
+use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, account};
+use frame_system::{Pallet as System, RawOrigin};
+use crate::structs::Attribute;
 
-benchmarks! {
-	add_attribute {
-		let s in 0 .. 100;
-		let caller: T::AccountId = whitelisted_caller();
-	}: _(RawOrigin::Signed(caller), s)
-	verify {
-		assert_eq!(AttributeStore::<T>::get(), Some(s));
-	}
+/// Assert that the last event equals the provided one.
+fn assert_last_event<T: Config>(generic_event: <T as Config>::Event) {
+    System::<T>::assert_last_event(generic_event.into());
 }
 
-impl_benchmark_test_suite!(DID, crate::mock::new_test_ext(), crate::mock::Test);
+const CALLER_ACCOUNT_STR: &str = "Iredia1";
+const DID_ACCOUNT_STR: &str = "Iredia2";
+const NAME_BYTES: &[u8; 2] = b"id";
+const ATTRITUBE_BYTES: &[u8; 17] = b"did:pq:1234567890";
+
+benchmarks! {
+    add_attribute {
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
+
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), ATTRITUBE_BYTES.to_vec(), None)
+    verify {
+        assert_last_event::<T>(Event::<T>::AttributeAdded(
+            caller.into(),
+            did_account.clone(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
+            None,
+        ).into());
+    }
+
+    update_attribute {
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
+
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+        let new_attribute = b"did:pq:0987654321";
+        <DID<T>>::add_attribute(
+            RawOrigin::Signed(caller.clone()).into(),
+            did_account.clone(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
+            None)?;
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), new_attribute.to_vec(), None)
+    verify {
+        assert_last_event::<T>(Event::<T>::AttributeUpdated(
+            caller.clone(),
+            did_account.clone(),
+            NAME_BYTES.to_vec(),
+            new_attribute.to_vec(),
+            None,
+        ).into());
+    }
+
+    read_attribute {
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
+
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+        <DID<T>>::add_attribute(
+            RawOrigin::Signed(caller.clone()).into(),
+            did_account.clone(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
+            None)?;
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec())
+    verify {
+        let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
+            name: NAME_BYTES.to_vec(),
+            value: ATTRITUBE_BYTES.to_vec(),
+            validity: u32::max_value().into(),
+            created: T::Time::now().into(),
+        };
+        assert_last_event::<T>(Event::<T>::AttributeRead(read_attr).into());
+    }
+
+    remove_attribute {
+        let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
+        let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+        <DID<T>>::add_attribute(
+            RawOrigin::Signed(caller.clone()).into(),
+            did_account.clone(),
+            NAME_BYTES.to_vec(),
+            ATTRITUBE_BYTES.to_vec(),
+            None)?;
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec())
+    verify {
+        assert_last_event::<T>(Event::<T>::AttributeRemoved(
+            caller.clone(),
+            did_account.clone(),
+            NAME_BYTES.to_vec(),
+        ).into());
+    }
+
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::mock;
+    use frame_support::sp_io::TestExternalities;
+
+    pub fn new_test_ext() -> TestExternalities {
+        mock::ExternalityBuilder::build()
+    }
+}
+
+impl_benchmark_test_suite!(
+    DID,
+    crate::benchmarking::tests::new_test_ext(),
+    crate::mock::TestRuntime,
+);

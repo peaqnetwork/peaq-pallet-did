@@ -23,13 +23,17 @@ mod benchmarking;
 // Re-export did items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
+pub mod weights;
+pub use weights::WeightInfo;
+
 #[frame_support::pallet]
 pub mod pallet {
     use crate::did::DidError;
     use crate::did::*;
     use crate::structs::*;
+    use super::WeightInfo;
     use frame_support::pallet_prelude::*;
-    use frame_support::traits::Time as MomentTime;
+    pub use frame_support::traits::Time as MomentTime;
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
     use sp_std::vec::Vec;
@@ -40,6 +44,8 @@ pub mod pallet {
         /// Because this pallet emits events, it depends on the runtime's definition of an event.
         type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
         type Time: MomentTime;
+        /// Weight information for extrinsics in this pallet.
+        type WeightInfo: WeightInfo;
     }
 
     // Pallets use events to inform users when important changes are made.
@@ -133,7 +139,7 @@ pub mod pallet {
     impl<T: Config> Pallet<T> {
         /// Creates a new attribute as part of a DID
         /// with optional validity
-        #[pallet::weight(1_000)]
+        #[pallet::weight(T::WeightInfo::add_attribute())]
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
@@ -167,7 +173,7 @@ pub mod pallet {
 
         /// Update an existing attribute of a DID
         /// with optional validity
-        #[pallet::weight(1_000)]
+        #[pallet::weight(T::WeightInfo::update_attribute())]
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
@@ -199,7 +205,7 @@ pub mod pallet {
         }
 
         /// Read did attribute
-        #[pallet::weight(1_000)]
+        #[pallet::weight(T::WeightInfo::read_attribute())]
         pub fn read_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
@@ -221,7 +227,7 @@ pub mod pallet {
         }
 
         /// Delete an existing attribute of a DID
-        #[pallet::weight(1_000)]
+        #[pallet::weight(T::WeightInfo::remove_attribute())]
         pub fn remove_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
