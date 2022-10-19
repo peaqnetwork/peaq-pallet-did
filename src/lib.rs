@@ -28,10 +28,10 @@ pub use weights::WeightInfo;
 
 #[frame_support::pallet]
 pub mod pallet {
+    use super::WeightInfo;
     use crate::did::DidError;
     use crate::did::*;
     use crate::structs::*;
-    use super::WeightInfo;
     use frame_support::pallet_prelude::*;
     pub use frame_support::traits::Time as MomentTime;
     use frame_system::pallet_prelude::*;
@@ -90,6 +90,8 @@ pub mod pallet {
         AttributeNotFound,
         // Dispatch when trying to modify another owner did
         AttributeAuthorizationFailed,
+        // Dispatch when block number is invalid
+        MaxBlockNumberExceeded,
     }
 
     impl<T: Config> Error<T> {
@@ -104,6 +106,9 @@ pub mod pallet {
                 DidError::FailedUpdate => return Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::AuthorizationFailed => {
                     return Err(Error::<T>::AttributeAuthorizationFailed.into())
+                }
+                DidError::MaxBlockNumberExceeded => {
+                    return Err(Error::<T>::MaxBlockNumberExceeded.into())
                 }
             }
         }
@@ -325,12 +330,21 @@ pub mod pallet {
                 _ => (),
             }
 
+            let max_block: T::BlockNumber = u32::max_value().into();
+
             let validity: T::BlockNumber = match valid_for {
                 Some(blocks) => {
                     let now_block_number = <frame_system::Pallet<T>>::block_number();
-                    now_block_number + blocks
+
+                    let validity = now_block_number + blocks;
+
+                    if validity > max_block {
+                        return Err(DidError::MaxBlockNumberExceeded);
+                    };
+
+                    validity
                 }
-                None => u32::max_value().into(),
+                None => max_block,
             };
 
             // Get attribute
