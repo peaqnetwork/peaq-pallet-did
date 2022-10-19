@@ -40,9 +40,9 @@ fn add_attribute_test() {
                 did_account,
                 b"name".to_vec(),
                 attribute.to_vec(),
-                Some(12345678989585857589_u64),
+                Some(4294967299999996_u64),
             ),
-            Error::<Test>::MaxBlockNumberExceeded
+            Error::<Test>::InvalidSuppliedValue
         );
     });
 }
@@ -85,7 +85,7 @@ fn update_attribute_test() {
                 attribute.to_vec(),
                 Some(12345678989585857589_u64),
             ),
-            Error::<Test>::MaxBlockNumberExceeded
+            Error::<Test>::InvalidSuppliedValue
         );
 
         // Test update another owner did attribute

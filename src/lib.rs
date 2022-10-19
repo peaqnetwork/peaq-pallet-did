@@ -92,6 +92,8 @@ pub mod pallet {
         AttributeAuthorizationFailed,
         // Dispatch when block number is invalid
         MaxBlockNumberExceeded,
+        InvalidSuppliedValue,
+        ParseError,
     }
 
     impl<T: Config> Error<T> {
@@ -104,6 +106,10 @@ pub mod pallet {
                 }
                 DidError::FailedCreate => return Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::FailedUpdate => return Err(Error::<T>::AttributeCreationFailed.into()),
+                DidError::ParseError => return Err(Error::<T>::ParseError.into()),
+                DidError::InvalidSuppliedValue => {
+                    return Err(Error::<T>::InvalidSuppliedValue.into())
+                }
                 DidError::AuthorizationFailed => {
                     return Err(Error::<T>::AttributeAuthorizationFailed.into())
                 }
@@ -403,19 +409,32 @@ pub mod pallet {
 
             let validity: T::BlockNumber = match valid_for {
                 Some(blocks) => {
-                    let now_block_number = <frame_system::Pallet<T>>::block_number();
+                    let now_block_number: T::BlockNumber =
+                        <frame_system::Pallet<T>>::block_number();
 
-                    if blocks > max_block {
+                    // convert to u32
+                    let block_number = TryInto::<u32>::try_into(now_block_number).ok();
+                    let input = TryInto::<u32>::try_into(blocks).ok();
+
+                    let parse_block_number = match block_number {
+                        Some(bn) => bn,
+                        None => return Err(DidError::ParseError),
+                    };
+
+                    let parse_input = match input {
+                        Some(val) => val,
+                        None => return Err(DidError::InvalidSuppliedValue),
+                    };
+
+                    // check for addition values overflow
+                    let (new_validity, is_overflown) =
+                        parse_block_number.overflowing_add(parse_input);
+
+                    if is_overflown {
                         return Err(DidError::MaxBlockNumberExceeded);
                     };
 
-                    let new_validity = now_block_number + blocks;
-
-                    if new_validity > max_block {
-                        return Err(DidError::MaxBlockNumberExceeded);
-                    };
-
-                    new_validity
+                    new_validity.into()
                 }
                 None => max_block,
             };
