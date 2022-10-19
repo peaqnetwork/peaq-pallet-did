@@ -405,13 +405,17 @@ pub mod pallet {
                 Some(blocks) => {
                     let now_block_number = <frame_system::Pallet<T>>::block_number();
 
-                    let validity = now_block_number + blocks;
-
-                    if validity > max_block {
+                    if blocks > max_block {
                         return Err(DidError::MaxBlockNumberExceeded);
                     };
 
-                    validity
+                    let new_validity = now_block_number + blocks;
+
+                    if new_validity > max_block {
+                        return Err(DidError::MaxBlockNumberExceeded);
+                    };
+
+                    new_validity
                 }
                 None => max_block,
             };
