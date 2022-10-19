@@ -289,12 +289,11 @@ pub mod pallet {
             }
 
             let now_timestamp = T::Time::now();
-            let validity: T::BlockNumber = match valid_for {
-                Some(blocks) => {
-                    let now_block_number = <frame_system::Pallet<T>>::block_number();
-                    now_block_number + blocks
-                }
-                None => u32::max_value().into(),
+
+            // validate block number to prevent an overflow
+            let validity = match Self::validate_block_number(valid_for) {
+                Ok(validity) => validity,
+                Err(e) => return Err(e),
             };
 
             let new_attribute = Attribute {
@@ -330,21 +329,10 @@ pub mod pallet {
                 _ => (),
             }
 
-            let max_block: T::BlockNumber = u32::max_value().into();
-
-            let validity: T::BlockNumber = match valid_for {
-                Some(blocks) => {
-                    let now_block_number = <frame_system::Pallet<T>>::block_number();
-
-                    let validity = now_block_number + blocks;
-
-                    if validity > max_block {
-                        return Err(DidError::MaxBlockNumberExceeded);
-                    };
-
-                    validity
-                }
-                None => max_block,
+            // validate block number to prevent an overflow
+            let validity = match Self::validate_block_number(valid_for) {
+                Ok(validity) => validity,
+                Err(e) => return Err(e),
             };
 
             // Get attribute
@@ -406,6 +394,29 @@ pub mod pallet {
             let mut bytes_to_hash: Vec<u8> = did_account.encode().as_slice().to_vec();
             bytes_to_hash.append(&mut bytes_in_name);
             blake2_256(&bytes_to_hash[..])
+        }
+
+        fn validate_block_number(
+            valid_for: Option<T::BlockNumber>,
+        ) -> Result<T::BlockNumber, DidError> {
+            let max_block: T::BlockNumber = u32::max_value().into();
+
+            let validity: T::BlockNumber = match valid_for {
+                Some(blocks) => {
+                    let now_block_number = <frame_system::Pallet<T>>::block_number();
+
+                    let validity = now_block_number + blocks;
+
+                    if validity > max_block {
+                        return Err(DidError::MaxBlockNumberExceeded);
+                    };
+
+                    validity
+                }
+                None => max_block,
+            };
+
+            Ok(validity)
         }
     }
 }
