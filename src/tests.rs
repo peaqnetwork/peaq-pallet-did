@@ -6,6 +6,8 @@ use hex_literal::hex;
 #[test]
 fn add_attribute_test() {
     new_test_ext().execute_with(|| {
+        System::set_block_number(1);
+
         let acct = "Iredia";
         let acct2 = "Iredia2";
         let origin = account_key(acct);
@@ -40,9 +42,9 @@ fn add_attribute_test() {
                 did_account,
                 b"name".to_vec(),
                 attribute.to_vec(),
-                Some(4294967299999996_u64),
+                Some(u64::max_value()),
             ),
-            Error::<Test>::InvalidSuppliedValue
+            Error::<Test>::MaxBlockNumberExceeded
         );
     });
 }
@@ -50,6 +52,8 @@ fn add_attribute_test() {
 #[test]
 fn update_attribute_test() {
     new_test_ext().execute_with(|| {
+        System::set_block_number(1);
+
         let acct = "Iredia";
         let acct2 = "Iredia2";
         let acct3 = "Fake";
@@ -83,9 +87,9 @@ fn update_attribute_test() {
                 did_account,
                 name.to_vec(),
                 attribute.to_vec(),
-                Some(12345678989585857589_u64),
+                Some(u64::max_value()),
             ),
-            Error::<Test>::InvalidSuppliedValue
+            Error::<Test>::MaxBlockNumberExceeded
         );
 
         // Test update another owner did attribute

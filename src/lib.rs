@@ -36,6 +36,8 @@ pub mod pallet {
     pub use frame_support::traits::Time as MomentTime;
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
+    use sp_runtime::traits::Bounded;
+    use sp_runtime::traits::CheckedAdd;
     use sp_std::vec::Vec;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
@@ -106,10 +108,6 @@ pub mod pallet {
                 }
                 DidError::FailedCreate => return Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::FailedUpdate => return Err(Error::<T>::AttributeCreationFailed.into()),
-                DidError::ParseError => return Err(Error::<T>::ParseError.into()),
-                DidError::InvalidSuppliedValue => {
-                    return Err(Error::<T>::InvalidSuppliedValue.into())
-                }
                 DidError::AuthorizationFailed => {
                     return Err(Error::<T>::AttributeAuthorizationFailed.into())
                 }
@@ -405,36 +403,23 @@ pub mod pallet {
         fn validate_block_number(
             valid_for: Option<T::BlockNumber>,
         ) -> Result<T::BlockNumber, DidError> {
-            let max_block: T::BlockNumber = u32::max_value().into();
+            let max_block: T::BlockNumber = Bounded::max_value();
 
             let validity: T::BlockNumber = match valid_for {
                 Some(blocks) => {
                     let now_block_number: T::BlockNumber =
                         <frame_system::Pallet<T>>::block_number();
 
-                    // convert to u32
-                    let block_number = TryInto::<u32>::try_into(now_block_number).ok();
-                    let input = TryInto::<u32>::try_into(blocks).ok();
-
-                    let parse_block_number = match block_number {
-                        Some(bn) => bn,
-                        None => return Err(DidError::ParseError),
-                    };
-
-                    let parse_input = match input {
-                        Some(val) => val,
-                        None => return Err(DidError::InvalidSuppliedValue),
-                    };
-
                     // check for addition values overflow
-                    let (new_validity, is_overflown) =
-                        parse_block_number.overflowing_add(parse_input);
+                    // new_added_vailidity will be NONE if overflown
+                    let new_added_vailidity = now_block_number.checked_add(&blocks);
 
-                    if is_overflown {
-                        return Err(DidError::MaxBlockNumberExceeded);
+                    let new_validity = match new_added_vailidity {
+                        Some(v) => v,
+                        None => return Err(DidError::MaxBlockNumberExceeded),
                     };
 
-                    new_validity.into()
+                    new_validity
                 }
                 None => max_block,
             };
