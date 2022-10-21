@@ -28,14 +28,16 @@ pub use weights::WeightInfo;
 
 #[frame_support::pallet]
 pub mod pallet {
+    use super::WeightInfo;
     use crate::did::DidError;
     use crate::did::*;
     use crate::structs::*;
-    use super::WeightInfo;
     use frame_support::pallet_prelude::*;
     pub use frame_support::traits::Time as MomentTime;
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
+    use sp_runtime::traits::Bounded;
+    use sp_runtime::traits::CheckedAdd;
     use sp_std::vec::Vec;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
@@ -90,6 +92,10 @@ pub mod pallet {
         AttributeNotFound,
         // Dispatch when trying to modify another owner did
         AttributeAuthorizationFailed,
+        // Dispatch when block number is invalid
+        MaxBlockNumberExceeded,
+        InvalidSuppliedValue,
+        ParseError,
     }
 
     impl<T: Config> Error<T> {
@@ -104,6 +110,9 @@ pub mod pallet {
                 DidError::FailedUpdate => return Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::AuthorizationFailed => {
                     return Err(Error::<T>::AttributeAuthorizationFailed.into())
+                }
+                DidError::MaxBlockNumberExceeded => {
+                    return Err(Error::<T>::MaxBlockNumberExceeded.into())
                 }
             }
         }
@@ -284,12 +293,11 @@ pub mod pallet {
             }
 
             let now_timestamp = T::Time::now();
-            let validity: T::BlockNumber = match valid_for {
-                Some(blocks) => {
-                    let now_block_number = <frame_system::Pallet<T>>::block_number();
-                    now_block_number + blocks
-                }
-                None => u32::max_value().into(),
+
+            // validate block number to prevent an overflow
+            let validity = match Self::validate_block_number(valid_for) {
+                Ok(validity) => validity,
+                Err(e) => return Err(e),
             };
 
             let new_attribute = Attribute {
@@ -325,12 +333,10 @@ pub mod pallet {
                 _ => (),
             }
 
-            let validity: T::BlockNumber = match valid_for {
-                Some(blocks) => {
-                    let now_block_number = <frame_system::Pallet<T>>::block_number();
-                    now_block_number + blocks
-                }
-                None => u32::max_value().into(),
+            // validate block number to prevent an overflow
+            let validity = match Self::validate_block_number(valid_for) {
+                Ok(validity) => validity,
+                Err(e) => return Err(e),
             };
 
             // Get attribute
@@ -392,6 +398,33 @@ pub mod pallet {
             let mut bytes_to_hash: Vec<u8> = did_account.encode().as_slice().to_vec();
             bytes_to_hash.append(&mut bytes_in_name);
             blake2_256(&bytes_to_hash[..])
+        }
+
+        fn validate_block_number(
+            valid_for: Option<T::BlockNumber>,
+        ) -> Result<T::BlockNumber, DidError> {
+            let max_block: T::BlockNumber = Bounded::max_value();
+
+            let validity: T::BlockNumber = match valid_for {
+                Some(blocks) => {
+                    let now_block_number: T::BlockNumber =
+                        <frame_system::Pallet<T>>::block_number();
+
+                    // check for addition values overflow
+                    // new_added_vailidity will be NONE if overflown
+                    let new_added_vailidity = now_block_number.checked_add(&blocks);
+
+                    let new_validity = match new_added_vailidity {
+                        Some(v) => v,
+                        None => return Err(DidError::MaxBlockNumberExceeded),
+                    };
+
+                    new_validity
+                }
+                None => max_block,
+            };
+
+            Ok(validity)
         }
     }
 }
