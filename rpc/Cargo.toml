@@ -1,0 +1,27 @@
+[package]
+name = "peaq-pallet-did-rpc"
+description = "peaq did rpc interface."
+version = "0.0.1"
+edition = "2021"
+authors = ['peaq network <https://github.com/peaqnetwork>']
+homepage = 'https://peaq.network/'
+license = 'Apache-2.0'
+publish = false
+repository = 'https://github.com/peaqnetwork/peaq-pallet-did/'
+
+
+# [TODO] change typing
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.0.0" }
+jsonrpc-core = "18.0.0"
+jsonrpc-core-client = "18.0.0"
+jsonrpc-derive = "18.0.0"
+
+# frame-support = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
+sp-api = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
+sp-blockchain = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
+sp-core = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
+sp-rpc = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
+sp-runtime = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
+peaq-pallet-did-runtime-api = { version = "0.0.1", path = "./runtime-api" }
+peaq-pallet-did = { version = "0.0.1", path = "../pallet/" }
