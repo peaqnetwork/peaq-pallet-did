@@ -15,9 +15,8 @@ use serde::{Deserialize, Serialize};
 
 
 #[derive(
-	Clone, Encode, Decode,
+	Clone, Encode, Decode, Serialize, Deserialize
 )]
-#[derive(Serialize, Deserialize)]
 pub struct RPCAttribute<BlockNumber, Moment> {
 	pub name: Bytes,
 	pub value: Bytes,
@@ -43,7 +42,7 @@ pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
         Result<Option<RPCAttribute<BlockNumber, Moment>>>;
 }
 
-/// A struct that implements the [`OracleApi`].
+/// A struct that implements the [`PeaqDIDApi`].
 pub struct PeaqDID<C, B> {
 	client: Arc<C>,
 	_marker: std::marker::PhantomData<B>,

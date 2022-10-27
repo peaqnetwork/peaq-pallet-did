@@ -10,7 +10,6 @@ publish = false
 repository = 'https://github.com/peaqnetwork/peaq-pallet-did/'
 
 
-# [TODO] change typing
 [dependencies]
 codec = { package = "parity-scale-codec", version = "3.0.0" }
 jsonrpc-core = "18.0.0"
@@ -19,7 +18,6 @@ jsonrpc-derive = "18.0.0"
 serde = "1.0.136"
 
 
-# frame-support = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
 sp-api = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
 sp-blockchain = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
 sp-core = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.19" }
