@@ -75,15 +75,10 @@ default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 branch = 'peaq-polkadot-v0.9.19'  # or the latest monthly
 
-[dependencies.serde]
-version = "1.0.136"
-optional = true
-
 [features]
 default = ['std']
 runtime-benchmarks = ['frame-benchmarking']
 std = [
-	'serde',
     'codec/std',
     'scale-info/std',
     'frame-support/std',
