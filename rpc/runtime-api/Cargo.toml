@@ -1,6 +1,6 @@
 [package]
 name = "peaq-pallet-did-runtime-api"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 description = 'A pallet that handles peaq DID managment on peaq network.'
 authors = ['peaq network <https://github.com/peaqnetwork>']
@@ -18,12 +18,12 @@ version = '3.0.0'
 [dependencies.sp-api]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.19'
+branch = 'peaq-polkadot-v0.9.29'
 
 [dependencies.sp-std]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.19'
+branch = 'peaq-polkadot-v0.9.29'
 
 [dependencies.peaq-pallet-did]
 default-features = false
