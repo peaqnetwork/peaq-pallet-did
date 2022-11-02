@@ -37,8 +37,8 @@ impl<BlockNumber, Moment> From<Attribute::<BlockNumber, Moment>> for RPCAttribut
 
 #[rpc]
 pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
-	#[rpc(name = "peaqdid_readAttributes")]
-	fn read_attributes(&self, did_account: AccountId, name: Bytes, at: Option<BlockHash>) -> 
+	#[rpc(name = "peaqdid_readAttribute")]
+	fn read_attribute(&self, did_account: AccountId, name: Bytes, at: Option<BlockHash>) -> 
         Result<Option<RPCAttribute<BlockNumber, Moment>>>;
 }
 
@@ -49,7 +49,7 @@ pub struct PeaqDID<C, B> {
 }
 
 impl<C, B> PeaqDID<C, B> {
-	/// Create new `Oracle` with the given reference to the client.
+	/// Create new `PeaqDID` with the given reference to the client.
 	pub fn new(client: Arc<C>) -> Self {
 		PeaqDID {
 			client,
@@ -80,7 +80,7 @@ where
 	BlockNumber: Codec,
 	Moment: Codec,
 {
-	fn read_attributes(&self, did_account: AccountId, name: Bytes, at: Option<<Block as BlockT>::Hash>) -> 
+	fn read_attribute(&self, did_account: AccountId, name: Bytes, at: Option<<Block as BlockT>::Hash>) -> 
         Result<Option<RPCAttribute<BlockNumber, Moment>>>
     {
    		let api = self.client.runtime_api();
