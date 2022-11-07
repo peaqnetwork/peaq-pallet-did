@@ -3,8 +3,6 @@ use std::convert::From;
 
 use codec::{Decode, Encode};
 use codec::Codec;
-use jsonrpc_core::{Error as RpcError, ErrorCode, Result};
-use jsonrpc_derive::rpc;
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
 use peaq_pallet_did::structs::Attribute;
@@ -12,6 +10,11 @@ pub use peaq_pallet_did_runtime_api::PeaqDIDApi as PeaqDIDRuntimeApi;
 use sp_runtime::{generic::BlockId, traits::Block as BlockT};
 use sp_core::Bytes;
 use serde::{Deserialize, Serialize};
+use jsonrpsee::{
+	core::{async_trait, Error as JsonRpseeError, RpcResult},
+	proc_macros::rpc,
+	types::error::{CallError, ErrorObject},
+};
 
 
 #[derive(
@@ -25,21 +28,21 @@ pub struct RPCAttribute<BlockNumber, Moment> {
 }
 
 impl<BlockNumber, Moment> From<Attribute::<BlockNumber, Moment>> for RPCAttribute<BlockNumber, Moment> {
-    fn from(item: Attribute::<BlockNumber, Moment>) -> Self {
-        RPCAttribute {
-            name: item.name.into(),
-            value: item.value.into(),
-            validity: item.validity,
-            created: item.created,
-        }
-    }
+	fn from(item: Attribute::<BlockNumber, Moment>) -> Self {
+		RPCAttribute {
+			name: item.name.into(),
+			value: item.value.into(),
+			validity: item.validity,
+			created: item.created,
+		}
+	}
 }
 
-#[rpc]
+#[rpc(client, server)]
 pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
-	#[rpc(name = "peaqdid_readAttribute")]
+	#[method(name = "peaqdid_readAttribute")]
 	fn read_attribute(&self, did_account: AccountId, name: Bytes, at: Option<BlockHash>) -> 
-        Result<Option<RPCAttribute<BlockNumber, Moment>>>;
+		RpcResult<Option<RPCAttribute<BlockNumber, Moment>>>;
 }
 
 /// A struct that implements the [`PeaqDIDApi`].
@@ -62,8 +65,8 @@ pub enum Error {
 	RuntimeError,
 }
 
-impl From<Error> for i64 {
-	fn from(e: Error) -> i64 {
+impl From<Error> for i32 {
+	fn from(e: Error) -> i32 {
 		match e {
 			Error::RuntimeError => 1,
 		}
@@ -71,7 +74,8 @@ impl From<Error> for i64 {
 }
 
 
-impl<C, Block, AccountId, BlockNumber, Moment> PeaqDIDApi<<Block as BlockT>::Hash, AccountId, BlockNumber, Moment> for PeaqDID<C, Block>
+#[async_trait]
+impl<C, Block, AccountId, BlockNumber, Moment> PeaqDIDApiServer<<Block as BlockT>::Hash, AccountId, BlockNumber, Moment> for PeaqDID<C, Block>
 where
 	Block: BlockT,
 	C: Send + Sync + 'static + ProvideRuntimeApi<Block> + HeaderBackend<Block>,
@@ -81,19 +85,21 @@ where
 	Moment: Codec,
 {
 	fn read_attribute(&self, did_account: AccountId, name: Bytes, at: Option<<Block as BlockT>::Hash>) -> 
-        Result<Option<RPCAttribute<BlockNumber, Moment>>>
-    {
-   		let api = self.client.runtime_api();
+		RpcResult<Option<RPCAttribute<BlockNumber, Moment>>>
+	{
+		let api = self.client.runtime_api();
 		let at = BlockId::hash(at.unwrap_or(
 			// If the block hash is not supplied assume the best block.
 			self.client.info().best_hash,
 		));
-        api.read(&at, did_account, name.to_vec()).map(|o| {
-            o.map(|item| RPCAttribute::from(item))
-        }).map_err(|e| RpcError {
-    		code: ErrorCode::ServerError(Error::RuntimeError.into()),
-    		message: "Unable to get value.".into(),
-    		data: Some(format!("{:?}", e).into()),
-    	})
-    }
+		api.read(&at, did_account, name.to_vec()).map(|o| {
+			o.map(|item| RPCAttribute::from(item))
+		}).map_err(|e| {
+			JsonRpseeError::Call(CallError::Custom(ErrorObject::owned(
+				Error::RuntimeError.into(),
+				"Unable to get value.",
+				Some(format!("{:?}", e)),
+			)))
+		})
+	}
 }
