@@ -28,19 +28,19 @@ default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 optional = true
 branch = 'peaq-polkadot-v0.9.19'
-version = '4.0.0-dev'
+version = '3.1.0'
 
 [dependencies.frame-support]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 branch = 'peaq-polkadot-v0.9.19'
-version = '4.0.0-dev'
+version = '3.0.0'
 
 [dependencies.frame-system]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 branch = 'peaq-polkadot-v0.9.19'
-version = '4.0.0-dev'
+version = '3.0.0'
 
 [dependencies.scale-info]
 default-features = false
@@ -82,7 +82,7 @@ version = '4.0.0'
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 branch = 'peaq-polkadot-v0.9.19'  # or the latest monthly
-version = '4.0.0-dev'
+version = '3.0.0'
 
 [features]
 default = ['std']
