@@ -7,6 +7,7 @@ use crate::Pallet as DID;
 use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, account};
 use frame_system::{Pallet as System, RawOrigin};
 use crate::structs::Attribute;
+use num_traits::bounds::UpperBounded;
 
 /// Assert that the last event equals the provided one.
 fn assert_last_event<T: Config>(generic_event: <T as Config>::Event) {
@@ -26,8 +27,8 @@ benchmarks! {
     }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), ATTRITUBE_BYTES.to_vec(), None)
     verify {
         assert_last_event::<T>(Event::<T>::AttributeAdded(
-            caller.into(),
-            did_account.clone(),
+            caller,
+            did_account,
             NAME_BYTES.to_vec(),
             ATTRITUBE_BYTES.to_vec(),
             None,
@@ -66,13 +67,13 @@ benchmarks! {
             NAME_BYTES.to_vec(),
             ATTRITUBE_BYTES.to_vec(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec())
+    }: _(RawOrigin::Signed(caller.clone()), did_account, NAME_BYTES.to_vec())
     verify {
         let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
             name: NAME_BYTES.to_vec(),
             value: ATTRITUBE_BYTES.to_vec(),
-            validity: u32::max_value().into(),
-            created: T::Time::now().into(),
+            validity: T::BlockNumber::max_value(),
+            created: T::Time::now(),
         };
         assert_last_event::<T>(Event::<T>::AttributeRead(read_attr).into());
     }
@@ -90,7 +91,7 @@ benchmarks! {
     verify {
         assert_last_event::<T>(Event::<T>::AttributeRemoved(
             caller.clone(),
-            did_account.clone(),
+            did_account,
             NAME_BYTES.to_vec(),
         ).into());
     }
@@ -103,12 +104,12 @@ mod tests {
     use frame_support::sp_io::TestExternalities;
 
     pub fn new_test_ext() -> TestExternalities {
-        mock::ExternalityBuilder::build()
+        mock::new_test_ext()
     }
 }
 
 impl_benchmark_test_suite!(
     DID,
     crate::benchmarking::tests::new_test_ext(),
-    crate::mock::TestRuntime,
+    crate::mock::Test,
 );

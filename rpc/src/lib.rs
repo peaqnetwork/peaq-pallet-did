@@ -93,7 +93,7 @@ where
 			self.client.info().best_hash,
 		));
 		api.read(&at, did_account, name.to_vec()).map(|o| {
-			o.map(|item| RPCAttribute::from(item))
+			o.map(RPCAttribute::from)
 		}).map_err(|e| {
 			JsonRpseeError::Call(CallError::Custom(ErrorObject::owned(
 				Error::RuntimeError.into(),

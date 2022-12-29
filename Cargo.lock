@@ -1916,6 +1916,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "hex-literal",
+ "num-traits",
  "pallet-timestamp",
  "parity-scale-codec",
  "scale-info",

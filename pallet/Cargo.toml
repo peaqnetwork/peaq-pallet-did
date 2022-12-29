@@ -75,6 +75,10 @@ default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 branch = 'peaq-polkadot-v0.9.29'  # or the latest monthly
 
+[dependencies.num-traits]
+version = "0.2.8"
+default-features = false
+
 [features]
 default = ['std']
 runtime-benchmarks = ['frame-benchmarking']
@@ -90,5 +94,6 @@ std = [
 	'sp-rpc',
     'sp-core/std',
 	'pallet-timestamp/std',
+	'num-traits/std',
 ]
 try-runtime = ['frame-support/try-runtime']
