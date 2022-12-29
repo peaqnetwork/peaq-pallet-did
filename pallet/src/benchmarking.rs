@@ -2,11 +2,11 @@
 
 use super::*;
 
+use crate::structs::Attribute;
 #[allow(unused)]
 use crate::Pallet as DID;
-use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, account};
+use frame_benchmarking::{account, benchmarks, impl_benchmark_test_suite};
 use frame_system::{Pallet as System, RawOrigin};
-use crate::structs::Attribute;
 use num_traits::bounds::UpperBounded;
 
 /// Assert that the last event equals the provided one.

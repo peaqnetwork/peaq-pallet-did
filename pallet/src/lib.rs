@@ -103,17 +103,13 @@ pub mod pallet {
             match err {
                 DidError::NotFound => Err(Error::<T>::AttributeNotFound.into()),
                 DidError::AlreadyExist => Err(Error::<T>::AttributeAlreadyExist.into()),
-                DidError::NameExceedMaxChar => {
-                    Err(Error::<T>::AttributeNameExceedMax64.into())
-                }
+                DidError::NameExceedMaxChar => Err(Error::<T>::AttributeNameExceedMax64.into()),
                 DidError::FailedCreate => Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::FailedUpdate => Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::AuthorizationFailed => {
                     Err(Error::<T>::AttributeAuthorizationFailed.into())
                 }
-                DidError::MaxBlockNumberExceeded => {
-                    Err(Error::<T>::MaxBlockNumberExceeded.into())
-                }
+                DidError::MaxBlockNumberExceeded => Err(Error::<T>::MaxBlockNumberExceeded.into()),
             }
         }
     }
@@ -328,7 +324,9 @@ pub mod pallet {
             // check if the sender is the owner
             let is_owner = Self::is_owner(owner, did_account);
 
-            if let Err(e) = is_owner { return Err(e) }
+            if let Err(e) = is_owner {
+                return Err(e);
+            }
 
             // validate block number to prevent an overflow
             let validity = match Self::validate_block_number(valid_for) {
@@ -376,7 +374,9 @@ pub mod pallet {
             // check if the sender is the owner
             let is_owner = Self::is_owner(owner, did_account);
 
-            if let Err(e) = is_owner { return Err(e) }
+            if let Err(e) = is_owner {
+                return Err(e);
+            }
 
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
@@ -407,8 +407,6 @@ pub mod pallet {
                     // check for addition values overflow
                     // new_added_vailidity will be NONE if overflown
                     let new_added_vailidity = now_block_number.checked_add(&blocks);
-
-                    
 
                     match new_added_vailidity {
                         Some(v) => v,
