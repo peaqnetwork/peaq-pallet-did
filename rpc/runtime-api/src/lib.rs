@@ -4,9 +4,9 @@
 // The `unnecessary_mut_passed` warning originates from `decl_runtime_apis` macro.
 #![allow(clippy::unnecessary_mut_passed)]
 
-use sp_std::vec::Vec;
 use codec::Codec;
 use peaq_pallet_did::structs::Attribute;
+use sp_std::vec::Vec;
 
 sp_api::decl_runtime_apis! {
     pub trait PeaqDIDApi<AccountId, BlockNumber, Moment> where

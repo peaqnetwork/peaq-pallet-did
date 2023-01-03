@@ -101,19 +101,15 @@ pub mod pallet {
     impl<T: Config> Error<T> {
         fn dispatch_error(err: DidError) -> DispatchResult {
             match err {
-                DidError::NotFound => return Err(Error::<T>::AttributeNotFound.into()),
-                DidError::AlreadyExist => return Err(Error::<T>::AttributeAlreadyExist.into()),
-                DidError::NameExceedMaxChar => {
-                    return Err(Error::<T>::AttributeNameExceedMax64.into())
-                }
-                DidError::FailedCreate => return Err(Error::<T>::AttributeCreationFailed.into()),
-                DidError::FailedUpdate => return Err(Error::<T>::AttributeCreationFailed.into()),
+                DidError::NotFound => Err(Error::<T>::AttributeNotFound.into()),
+                DidError::AlreadyExist => Err(Error::<T>::AttributeAlreadyExist.into()),
+                DidError::NameExceedMaxChar => Err(Error::<T>::AttributeNameExceedMax64.into()),
+                DidError::FailedCreate => Err(Error::<T>::AttributeCreationFailed.into()),
+                DidError::FailedUpdate => Err(Error::<T>::AttributeCreationFailed.into()),
                 DidError::AuthorizationFailed => {
-                    return Err(Error::<T>::AttributeAuthorizationFailed.into())
+                    Err(Error::<T>::AttributeAuthorizationFailed.into())
                 }
-                DidError::MaxBlockNumberExceeded => {
-                    return Err(Error::<T>::MaxBlockNumberExceeded.into())
-                }
+                DidError::MaxBlockNumberExceeded => Err(Error::<T>::MaxBlockNumberExceeded.into()),
             }
         }
     }
@@ -285,7 +281,7 @@ pub mod pallet {
             valid_for: Option<T::BlockNumber>,
         ) -> Result<(), DidError> {
             // Generate id for integrity check
-            let id = Self::get_hashed_key_for_attr(&did_account, &name);
+            let id = Self::get_hashed_key_for_attr(did_account, name);
 
             // Check if attribute already exists
             if <AttributeStore<T>>::contains_key(&id) {
@@ -301,8 +297,8 @@ pub mod pallet {
             };
 
             let new_attribute = Attribute {
-                name: (&name).to_vec(),
-                value: (&value).to_vec(),
+                name: name.to_vec(),
+                value: value.to_vec(),
                 validity,
                 created: now_timestamp,
             };
@@ -328,9 +324,8 @@ pub mod pallet {
             // check if the sender is the owner
             let is_owner = Self::is_owner(owner, did_account);
 
-            match is_owner {
-                Err(e) => return Err(e),
-                _ => (),
+            if let Err(e) = is_owner {
+                return Err(e);
             }
 
             // validate block number to prevent an overflow
@@ -344,9 +339,9 @@ pub mod pallet {
 
             match attribute {
                 Some(mut attr) => {
-                    let id = Self::get_hashed_key_for_attr(&did_account, &name);
+                    let id = Self::get_hashed_key_for_attr(did_account, name);
 
-                    attr.value = (&value).to_vec();
+                    attr.value = value.to_vec();
                     attr.validity = validity;
 
                     <AttributeStore<T>>::mutate(&id, |a| *a = attr);
@@ -362,7 +357,7 @@ pub mod pallet {
             name: &[u8],
         ) -> Option<Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>>
         {
-            let id = Self::get_hashed_key_for_attr(&did_account, &name);
+            let id = Self::get_hashed_key_for_attr(did_account, name);
 
             if <AttributeStore<T>>::contains_key(&id) {
                 return Some(Self::attribute_of(&id));
@@ -379,12 +374,11 @@ pub mod pallet {
             // check if the sender is the owner
             let is_owner = Self::is_owner(owner, did_account);
 
-            match is_owner {
-                Err(e) => return Err(e),
-                _ => (),
+            if let Err(e) = is_owner {
+                return Err(e);
             }
 
-            let id = Self::get_hashed_key_for_attr(&did_account, &name);
+            let id = Self::get_hashed_key_for_attr(did_account, name);
 
             if !<AttributeStore<T>>::contains_key(&id) {
                 return Err(DidError::NotFound);
@@ -414,12 +408,10 @@ pub mod pallet {
                     // new_added_vailidity will be NONE if overflown
                     let new_added_vailidity = now_block_number.checked_add(&blocks);
 
-                    let new_validity = match new_added_vailidity {
+                    match new_added_vailidity {
                         Some(v) => v,
                         None => return Err(DidError::MaxBlockNumberExceeded),
-                    };
-
-                    new_validity
+                    }
                 }
                 None => max_block,
             };

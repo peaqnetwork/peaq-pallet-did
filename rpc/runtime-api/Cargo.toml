@@ -1,6 +1,6 @@
 [package]
 name = "peaq-pallet-did-runtime-api"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 description = 'A pallet that handles peaq DID managment on peaq network.'
 authors = ['peaq network <https://github.com/peaqnetwork>']

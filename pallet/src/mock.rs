@@ -1,7 +1,6 @@
 use crate as peaq_did;
 use frame_support::parameter_types;
 use frame_system as system;
-use pallet_timestamp;
 use sp_core::{sr25519, Pair, H256};
 use sp_runtime::{
     testing::Header,
@@ -28,7 +27,6 @@ parameter_types! {
     pub const BlockHashCount: u64 = 250;
     pub const SS58Prefix: u8 = 42;
     pub const BlockNumber: u64 = 5;
-
 }
 
 impl system::Config for Test {
