@@ -5,7 +5,7 @@ use super::*;
 use crate::structs::Attribute;
 #[allow(unused)]
 use crate::Pallet as DID;
-use frame_benchmarking::{account, benchmarks, impl_benchmark_test_suite};
+use frame_benchmarking::v1::{account, benchmarks, impl_benchmark_test_suite};
 use frame_system::{Pallet as System, RawOrigin};
 use num_traits::bounds::UpperBounded;
 
