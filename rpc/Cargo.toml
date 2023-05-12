@@ -25,4 +25,4 @@ sp-rpc = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polk
 sp-runtime = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.38" }
 peaq-pallet-did-runtime-api = { version = "0.0.3", path = "./runtime-api" }
 peaq-pallet-did = { version = "0.0.3", path = "../pallet/" }
-jsonrpsee = { git = "https://github.com/peaqnetwork/jsonrpsee", branch = "peaq-v0.15.1", features = ["server", "macros"] }
+jsonrpsee = { version = "0.16.2", features = ["client-core", "server", "macros"] }
