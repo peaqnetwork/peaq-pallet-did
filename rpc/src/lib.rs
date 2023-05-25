@@ -2,7 +2,7 @@ use std::convert::From;
 use std::sync::Arc;
 
 use codec::Codec;
-use codec::{Decode, Encode};
+//use codec::{Decode, Encode};
 use jsonrpsee::{
     core::{async_trait, Error as JsonRpseeError, RpcResult},
     proc_macros::rpc,
@@ -10,7 +10,6 @@ use jsonrpsee::{
 };
 use peaq_pallet_did::structs::Attribute;
 pub use peaq_pallet_did_runtime_api::PeaqDIDApi as PeaqDIDRuntimeApi;
-use serde::{Deserialize, Serialize};
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
 use sp_core::Bytes;
