@@ -37,7 +37,7 @@ impl<BlockNumber, Moment> From<Attribute<BlockNumber, Moment>>
         }
     }
 }
-
+*/
 
 #[rpc(client, server)]
 pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
@@ -47,7 +47,7 @@ pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
         did_account: AccountId,
         name: Bytes,
         at: Option<BlockHash>,
-    ) -> RpcResult<Option<RPCAttribute<BlockNumber, Moment>>>;
+    ) -> RpcResult<Option<Attribute<BlockNumber, Moment>>>;
 }
 
 /// A struct that implements the [`PeaqDIDApi`].
@@ -94,14 +94,14 @@ where
         did_account: AccountId,
         name: Bytes,
         at: Option<<Block as BlockT>::Hash>,
-    ) -> RpcResult<Option<RPCAttribute<BlockNumber, Moment>>> {
+    ) -> RpcResult<Option<Attribute<BlockNumber, Moment>>> {
         let api = self.client.runtime_api();
         let at = BlockId::hash(at.unwrap_or(
             // If the block hash is not supplied assume the best block.
             self.client.info().best_hash,
         ));
         api.read(&at, did_account, name.to_vec())
-            .map(|o| o.map(RPCAttribute::from))
+            .map(|o| o.map(Attribute::from))
             .map_err(|e| {
                 JsonRpseeError::Call(CallError::Custom(ErrorObject::owned(
                     Error::RuntimeError.into(),
@@ -111,6 +111,6 @@ where
             })
     }
 }
-*/
+
 
 
