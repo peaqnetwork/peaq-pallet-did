@@ -16,6 +16,7 @@ use sp_blockchain::HeaderBackend;
 use sp_core::Bytes;
 use sp_runtime::{generic::BlockId, traits::Block as BlockT};
 
+/*
 #[derive(Clone, Encode, Decode, Serialize, Deserialize)]
 pub struct RPCAttribute<BlockNumber, Moment> {
     pub name: Bytes,
@@ -36,6 +37,7 @@ impl<BlockNumber, Moment> From<Attribute<BlockNumber, Moment>>
         }
     }
 }
+
 
 #[rpc(client, server)]
 pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
@@ -109,3 +111,6 @@ where
             })
     }
 }
+*/
+
+
