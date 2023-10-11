@@ -18,11 +18,11 @@ jsonrpc-derive = "18.0.0"
 serde = "1.0.136"
 
 
-sp-api = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.38" }
-sp-blockchain = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.38" }
-sp-core = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.38" }
-sp-rpc = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.38" }
-sp-runtime = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.38" }
+sp-api = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.43" }
+sp-blockchain = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.43" }
+sp-core = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.43" }
+sp-rpc = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.43" }
+sp-runtime = { git = "https://github.com/peaqnetwork/substrate", branch = "peaq-polkadot-v0.9.43" }
 peaq-pallet-did-runtime-api = { version = "0.0.3", path = "./runtime-api" }
 peaq-pallet-did = { version = "0.0.3", path = "../pallet/" }
 jsonrpsee = { version = "0.16.2", features = ["client-core", "server", "macros"] }
