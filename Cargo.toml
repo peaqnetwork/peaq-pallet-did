@@ -4,3 +4,4 @@ members = [
  	"rpc",
 	"rpc/runtime-api",
 ]
+resolver = "2"

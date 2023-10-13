@@ -184,7 +184,11 @@ fn remove_attribute_test() {
 
         // Test remove another owner did attribute
         assert_noop!(
-            PeaqDID::remove_attribute(RuntimeOrigin::signed(fake_origin), did_account, name.to_vec()),
+            PeaqDID::remove_attribute(
+                RuntimeOrigin::signed(fake_origin),
+                did_account,
+                name.to_vec()
+            ),
             Error::<Test>::AttributeAuthorizationFailed
         );
 

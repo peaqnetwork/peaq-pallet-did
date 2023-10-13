@@ -288,7 +288,7 @@ pub mod pallet {
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
             // Check if attribute already exists
-            if <AttributeStore<T>>::contains_key(&id) {
+            if <AttributeStore<T>>::contains_key(id) {
                 return Err(DidError::AlreadyExist);
             }
 
@@ -307,12 +307,12 @@ pub mod pallet {
                 created: now_timestamp,
             };
 
-            <AttributeStore<T>>::insert(&id, new_attribute);
+            <AttributeStore<T>>::insert(id, new_attribute);
 
             // Store the owner of the did_account for further validation
             // when modification is requested
             let id = (&owner, &did_account).using_encoded(blake2_256);
-            <OwnerStore<T>>::insert((&owner, &id), &did_account);
+            <OwnerStore<T>>::insert((&owner, &id), did_account);
 
             Ok(())
         }
@@ -326,11 +326,7 @@ pub mod pallet {
             valid_for: Option<T::BlockNumber>,
         ) -> Result<(), DidError> {
             // check if the sender is the owner
-            let is_owner = Self::is_owner(owner, did_account);
-
-            if let Err(e) = is_owner {
-                return Err(e);
-            }
+            Self::is_owner(owner, did_account)?;
 
             // validate block number to prevent an overflow
             let validity = match Self::validate_block_number(valid_for) {
@@ -348,7 +344,7 @@ pub mod pallet {
                     attr.value = value.to_vec();
                     attr.validity = validity;
 
-                    <AttributeStore<T>>::mutate(&id, |a| *a = attr);
+                    <AttributeStore<T>>::mutate(id, |a| *a = attr);
                     Ok(())
                 }
                 None => Err(DidError::NotFound),
@@ -363,8 +359,8 @@ pub mod pallet {
         {
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
-            if <AttributeStore<T>>::contains_key(&id) {
-                return Some(Self::attribute_of(&id));
+            if <AttributeStore<T>>::contains_key(id) {
+                return Some(Self::attribute_of(id));
             }
             None
         }
@@ -376,18 +372,14 @@ pub mod pallet {
             name: &[u8],
         ) -> Result<(), DidError> {
             // check if the sender is the owner
-            let is_owner = Self::is_owner(owner, did_account);
-
-            if let Err(e) = is_owner {
-                return Err(e);
-            }
+            Self::is_owner(owner, did_account)?;
 
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
-            if !<AttributeStore<T>>::contains_key(&id) {
+            if !<AttributeStore<T>>::contains_key(id) {
                 return Err(DidError::NotFound);
             }
-            <AttributeStore<T>>::remove(&id);
+            <AttributeStore<T>>::remove(id);
             Ok(())
         }
 
