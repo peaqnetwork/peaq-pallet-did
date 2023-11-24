@@ -1,7 +1,17 @@
+[workspace.package]
+authors = ["EoTLabs <info@eotlabs.io>"]
+edition = "2021"
+version = "0.1.0"
+description = "A pallet that handles peaq DID managment on peaq network."
+homepage = "https://peaq.network/"
+license = "Apache-2.0"
+publish = false
+repository = "https://github.com/peaqnetwork/peaq-pallet-did/"
+
 [workspace]
 members = [
 	"pallet",
- 	"rpc",
+    "rpc",
 	"rpc/runtime-api",
 ]
 resolver = "2"

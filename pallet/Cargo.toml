@@ -1,99 +1,97 @@
 [package]
 name = "peaq-pallet-did"
-version = "0.1.0"
-edition = "2021"
-description = 'A pallet that handles peaq DID managment on peaq network.'
-authors = ['peaq network <https://github.com/peaqnetwork>']
-homepage = 'https://peaq.network/'
-license = 'Apache-2.0'
-publish = true
-repository = 'https://github.com/peaqnetwork/peaq-pallet-did/'
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+edition = { workspace = true }
+version = { workspace = true }
+description = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+publish = { workspace = true }
+repository = { workspace = true }
+authors = { workspace = true }
 
 [package.metadata.docs.rs]
-targets = ['x86_64-unknown-linux-gnu']
+targets = ["x86_64-unknown-linux-gnu"]
 
 [dev-dependencies]
-hex-literal = '0.3.3'
+hex-literal = "0.3.3"
 
 [dependencies.codec]
 default-features = false
-features = ['derive']
-package = 'parity-scale-codec'
-version = '3.2.2'
+features = ["derive"]
+package = "parity-scale-codec"
+version = "3.2.2"
 
 [dependencies.frame-benchmarking]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
+git = "https://github.com/peaqnetwork/substrate"
 optional = true
-branch = 'peaq-polkadot-v0.9.43'
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.frame-support]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.frame-system]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.scale-info]
 default-features = false
-features = ['derive']
-version = '2.0.1'
+features = ["derive"]
+version = "2.0.1"
 
 [dependencies.sp-runtime]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.sp-core]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.sp-rpc]
 default-features = false
 optional = true
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.sp-io]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.sp-std]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'  # or the latest monthly
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.pallet-timestamp]
 default-features = false
-git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.43'  # or the latest monthly
+git = "https://github.com/peaqnetwork/substrate"
+branch = "peaq-polkadot-v0.9.43"
 
 [dependencies.num-traits]
 version = "0.2.8"
 default-features = false
 
 [features]
-default = ['std']
-runtime-benchmarks = ['frame-benchmarking']
+default = ["std"]
+runtime-benchmarks = ["frame-benchmarking"]
 std = [
-    'codec/std',
-    'scale-info/std',
-    'frame-support/std',
-    'frame-system/std',
-    'frame-benchmarking/std',
-	'sp-runtime/std',
-    'sp-std/std',
-	'sp-io/std',
-	'sp-rpc',
-    'sp-core/std',
-	'pallet-timestamp/std',
-	'num-traits/std',
+    "codec/std",
+    "scale-info/std",
+    "frame-support/std",
+    "frame-system/std",
+    "frame-benchmarking/std",
+	"sp-runtime/std",
+    "sp-std/std",
+	"sp-io/std",
+	"sp-rpc",
+    "sp-core/std",
+	"pallet-timestamp/std",
+	"num-traits/std",
 ]
-try-runtime = ['frame-support/try-runtime']
+try-runtime = ["frame-support/try-runtime"]
