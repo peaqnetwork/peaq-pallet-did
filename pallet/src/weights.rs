@@ -49,26 +49,26 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 	// Storage: Timestamp Now (r:1 w:0)
 	// Storage: PeaqDid OwnerStore (r:0 w:1)
 	fn add_attribute() -> Weight {
-		Weight::from_ref_time(20_709_000_u64)
+		Weight::from_parts(20_709_000_u64, 0)
 			.saturating_add(T::DbWeight::get().reads(2_u64))
 			.saturating_add(T::DbWeight::get().writes(2_u64))
 	}
 	// Storage: PeaqDid OwnerStore (r:1 w:0)
 	// Storage: PeaqDid AttributeStore (r:1 w:1)
 	fn update_attribute() -> Weight {
-		Weight::from_ref_time(23_815_000_u64)
+		Weight::from_parts(23_815_000_u64, 0)
 			.saturating_add(T::DbWeight::get().reads(2_u64))
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
 	// Storage: PeaqDid AttributeStore (r:1 w:0)
 	fn read_attribute() -> Weight {
-		Weight::from_ref_time(16_582_000_u64)
+		Weight::from_parts(16_582_000_u64, 0)
 			.saturating_add(T::DbWeight::get().reads(1_u64))
 	}
 	// Storage: PeaqDid OwnerStore (r:1 w:0)
 	// Storage: PeaqDid AttributeStore (r:1 w:1)
 	fn remove_attribute() -> Weight {
-		Weight::from_ref_time(19_998_000_u64)
+		Weight::from_parts(19_998_000_u64, 0)
 			.saturating_add(T::DbWeight::get().reads(2_u64))
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}

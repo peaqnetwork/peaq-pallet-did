@@ -1,6 +1,6 @@
 [package]
 name = "peaq-pallet-did"
-version = "0.0.3"
+version = "0.1.0"
 edition = "2021"
 description = 'A pallet that handles peaq DID managment on peaq network.'
 authors = ['peaq network <https://github.com/peaqnetwork>']
@@ -27,17 +27,17 @@ version = '3.2.2'
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
 optional = true
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.frame-support]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.frame-system]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.scale-info]
 default-features = false
@@ -47,33 +47,33 @@ version = '2.0.1'
 [dependencies.sp-runtime]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.sp-core]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.sp-rpc]
 default-features = false
 optional = true
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.sp-io]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'
+branch = 'peaq-polkadot-v0.9.43'
 
 [dependencies.sp-std]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'  # or the latest monthly
+branch = 'peaq-polkadot-v0.9.43'  # or the latest monthly
 
 [dependencies.pallet-timestamp]
 default-features = false
 git = 'https://github.com/peaqnetwork/substrate'
-branch = 'peaq-polkadot-v0.9.38'  # or the latest monthly
+branch = 'peaq-polkadot-v0.9.43'  # or the latest monthly
 
 [dependencies.num-traits]
 version = "0.2.8"

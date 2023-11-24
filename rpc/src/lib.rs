@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
 use sp_core::Bytes;
-use sp_runtime::{generic::BlockId, traits::Block as BlockT};
+use sp_runtime::traits::Block as BlockT;
 
 #[derive(Clone, Encode, Decode, Serialize, Deserialize)]
 pub struct RPCAttribute<BlockNumber, Moment> {
@@ -44,7 +44,7 @@ pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
         &self,
         did_account: AccountId,
         name: Bytes,
-        at: Option<BlockHash>,
+        at: BlockHash,
     ) -> RpcResult<Option<RPCAttribute<BlockNumber, Moment>>>;
 }
 
@@ -91,14 +91,10 @@ where
         &self,
         did_account: AccountId,
         name: Bytes,
-        at: Option<<Block as BlockT>::Hash>,
+        at: <Block as BlockT>::Hash,
     ) -> RpcResult<Option<RPCAttribute<BlockNumber, Moment>>> {
         let api = self.client.runtime_api();
-        let at = BlockId::hash(at.unwrap_or(
-            // If the block hash is not supplied assume the best block.
-            self.client.info().best_hash,
-        ));
-        api.read(&at, did_account, name.to_vec())
+        api.read(at, did_account, name.to_vec())
             .map(|o| o.map(RPCAttribute::from))
             .map_err(|e| {
                 JsonRpseeError::Call(CallError::Custom(ErrorObject::owned(
