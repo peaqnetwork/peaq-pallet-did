@@ -1,7 +1,7 @@
 [package]
 name = "peaq-pallet-did-rpc"
 description = "peaq did rpc interface."
-version = "0.0.3"
+version = "0.1.0"
 edition = "2021"
 authors = ['peaq network <https://github.com/peaqnetwork>']
 homepage = 'https://peaq.network/'
