@@ -16,7 +16,7 @@ fn add_attribute_test() {
         let attribute = b"did:pq:1234567890";
 
         assert_ok!(PeaqDID::add_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec(),
             attribute.to_vec(),
@@ -26,7 +26,7 @@ fn add_attribute_test() {
         // Test for duplicate entry
         assert_noop!(
             PeaqDID::add_attribute(
-                Origin::signed(origin),
+                RuntimeOrigin::signed(origin),
                 did_account,
                 name.to_vec(),
                 attribute.to_vec(),
@@ -38,7 +38,7 @@ fn add_attribute_test() {
         // Test update did attribute with invalid validity
         assert_noop!(
             PeaqDID::add_attribute(
-                Origin::signed(origin),
+                RuntimeOrigin::signed(origin),
                 did_account,
                 b"name".to_vec(),
                 attribute.to_vec(),
@@ -64,7 +64,7 @@ fn update_attribute_test() {
         let attribute = b"did:pq:1234567890";
 
         assert_ok!(PeaqDID::add_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec(),
             attribute.to_vec(),
@@ -73,7 +73,7 @@ fn update_attribute_test() {
 
         // Test update owner did attribute
         assert_ok!(PeaqDID::update_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec(),
             attribute.to_vec(),
@@ -83,7 +83,7 @@ fn update_attribute_test() {
         // Test update did attribute with invalid validity
         assert_noop!(
             PeaqDID::update_attribute(
-                Origin::signed(origin),
+                RuntimeOrigin::signed(origin),
                 did_account,
                 name.to_vec(),
                 attribute.to_vec(),
@@ -95,7 +95,7 @@ fn update_attribute_test() {
         // Test update another owner did attribute
         assert_noop!(
             PeaqDID::update_attribute(
-                Origin::signed(fake_origin),
+                RuntimeOrigin::signed(fake_origin),
                 did_account,
                 name.to_vec(),
                 attribute.to_vec(),
@@ -107,7 +107,7 @@ fn update_attribute_test() {
         // Test update non-existing attribute
         assert_noop!(
             PeaqDID::update_attribute(
-                Origin::signed(origin),
+                RuntimeOrigin::signed(origin),
                 did_account,
                 b"name".to_vec(),
                 attribute.to_vec(),
@@ -129,7 +129,7 @@ fn read_attribute_test() {
         let attribute = b"did:pq:1234567890";
 
         assert_ok!(PeaqDID::add_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec(),
             attribute.to_vec(),
@@ -138,7 +138,7 @@ fn read_attribute_test() {
 
         // Test read existing attribute
         assert_ok!(PeaqDID::read_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec()
         ));
@@ -146,7 +146,7 @@ fn read_attribute_test() {
         // Test read non-existing attribute
         assert_noop!(
             PeaqDID::read_attribute(
-                Origin::signed(origin),
+                RuntimeOrigin::signed(origin),
                 account_key("invalid"),
                 name.to_vec()
             ),
@@ -168,7 +168,7 @@ fn remove_attribute_test() {
         let attribute = b"did:pq:1234567890";
 
         assert_ok!(PeaqDID::add_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec(),
             attribute.to_vec(),
@@ -177,20 +177,20 @@ fn remove_attribute_test() {
 
         // Test remove owner did attribute
         assert_ok!(PeaqDID::remove_attribute(
-            Origin::signed(origin),
+            RuntimeOrigin::signed(origin),
             did_account,
             name.to_vec()
         ));
 
         // Test remove another owner did attribute
         assert_noop!(
-            PeaqDID::remove_attribute(Origin::signed(fake_origin), did_account, name.to_vec()),
+            PeaqDID::remove_attribute(RuntimeOrigin::signed(fake_origin), did_account, name.to_vec()),
             Error::<Test>::AttributeAuthorizationFailed
         );
 
         // Test remove non-existing attribute
         assert_noop!(
-            PeaqDID::remove_attribute(Origin::signed(origin), did_account, b"name".to_vec()),
+            PeaqDID::remove_attribute(RuntimeOrigin::signed(origin), did_account, b"name".to_vec()),
             Error::<Test>::AttributeNotFound
         );
     });

@@ -44,7 +44,8 @@ pub mod pallet {
     #[pallet::config]
     pub trait Config: frame_system::Config {
         /// Because this pallet emits events, it depends on the runtime's definition of an event.
-        type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
+        type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
+
         type Time: MomentTime;
         /// Weight information for extrinsics in this pallet.
         type WeightInfo: WeightInfo;
@@ -144,6 +145,7 @@ pub mod pallet {
     impl<T: Config> Pallet<T> {
         /// Creates a new attribute as part of a DID
         /// with optional validity
+        #[pallet::call_index(0)]
         #[pallet::weight(T::WeightInfo::add_attribute())]
         pub fn add_attribute(
             origin: OriginFor<T>,
@@ -178,6 +180,7 @@ pub mod pallet {
 
         /// Update an existing attribute of a DID
         /// with optional validity
+        #[pallet::call_index(1)]
         #[pallet::weight(T::WeightInfo::update_attribute())]
         pub fn update_attribute(
             origin: OriginFor<T>,
@@ -210,6 +213,7 @@ pub mod pallet {
         }
 
         /// Read did attribute
+        #[pallet::call_index(2)]
         #[pallet::weight(T::WeightInfo::read_attribute())]
         pub fn read_attribute(
             origin: OriginFor<T>,
@@ -232,6 +236,7 @@ pub mod pallet {
         }
 
         /// Delete an existing attribute of a DID
+        #[pallet::call_index(3)]
         #[pallet::weight(T::WeightInfo::remove_attribute())]
         pub fn remove_attribute(
             origin: OriginFor<T>,
