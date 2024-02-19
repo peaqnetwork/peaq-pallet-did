@@ -23,8 +23,8 @@ mod benchmarking;
 // Re-export did items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
-pub mod weights;
 pub mod weightinfo;
+pub mod weights;
 pub use weightinfo::WeightInfo;
 
 #[frame_support::pallet]
@@ -64,17 +64,17 @@ pub mod pallet {
             T::AccountId,
             Vec<u8>,
             Vec<u8>,
-            Option<T::BlockNumber>,
+            Option<BlockNumberFor<T>>,
         ),
         /// Event emitted when an attribute is read successfully
-        AttributeRead(Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>),
+        AttributeRead(Attribute<BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>),
         /// Event emitted when an attribute has been updated. [who, did_account, name, validity]
         AttributeUpdated(
             T::AccountId,
             T::AccountId,
             Vec<u8>,
             Vec<u8>,
-            Option<T::BlockNumber>,
+            Option<BlockNumberFor<T>>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
         AttributeRemoved(T::AccountId, T::AccountId, Vec<u8>),
@@ -126,7 +126,7 @@ pub mod pallet {
         _,
         Blake2_128Concat,
         [u8; 32],
-        Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>,
+        Attribute<BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>,
         ValueQuery,
     >;
 
@@ -152,7 +152,7 @@ pub mod pallet {
             did_account: T::AccountId,
             name: Vec<u8>,
             value: Vec<u8>,
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -187,7 +187,7 @@ pub mod pallet {
             did_account: T::AccountId,
             name: Vec<u8>,
             value: Vec<u8>,
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -263,7 +263,8 @@ pub mod pallet {
     }
 
     // implements the Did trait to satisfied the required methods
-    impl<T: Config> Did<T::AccountId, T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>
+    impl<T: Config>
+        Did<T::AccountId, BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>
         for Pallet<T>
     {
         fn is_owner(owner: &T::AccountId, did_account: &T::AccountId) -> Result<(), DidError> {
@@ -283,7 +284,7 @@ pub mod pallet {
             did_account: &T::AccountId,
             name: &[u8],
             value: &[u8],
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> Result<(), DidError> {
             // Generate id for integrity check
             let id = Self::get_hashed_key_for_attr(did_account, name);
@@ -324,7 +325,7 @@ pub mod pallet {
             did_account: &T::AccountId,
             name: &[u8],
             value: &[u8],
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> Result<(), DidError> {
             // check if the sender is the owner
             Self::is_owner(owner, did_account)?;
@@ -356,7 +357,7 @@ pub mod pallet {
         fn read(
             did_account: &T::AccountId,
             name: &[u8],
-        ) -> Option<Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>>
+        ) -> Option<Attribute<BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>>
         {
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
@@ -392,13 +393,13 @@ pub mod pallet {
         }
 
         fn validate_block_number(
-            valid_for: Option<T::BlockNumber>,
-        ) -> Result<T::BlockNumber, DidError> {
-            let max_block: T::BlockNumber = Bounded::max_value();
+            valid_for: Option<BlockNumberFor<T>>,
+        ) -> Result<BlockNumberFor<T>, DidError> {
+            let max_block: BlockNumberFor<T> = Bounded::max_value();
 
-            let validity: T::BlockNumber = match valid_for {
+            let validity: BlockNumberFor<T> = match valid_for {
                 Some(blocks) => {
-                    let now_block_number: T::BlockNumber =
+                    let now_block_number: BlockNumberFor<T> =
                         <frame_system::Pallet<T>>::block_number();
 
                     // check for addition values overflow

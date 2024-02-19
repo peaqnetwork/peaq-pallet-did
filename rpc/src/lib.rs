@@ -1,13 +1,13 @@
 use std::convert::From;
 use std::sync::Arc;
 
-use parity_scale_codec::Codec;
-use parity_scale_codec::{Decode, Encode};
 use jsonrpsee::{
     core::{async_trait, Error as JsonRpseeError, RpcResult},
     proc_macros::rpc,
     types::error::{CallError, ErrorObject},
 };
+use parity_scale_codec::Codec;
+use parity_scale_codec::{Decode, Encode};
 use peaq_pallet_did::structs::Attribute;
 pub use peaq_pallet_did_runtime_api::PeaqDIDApi as PeaqDIDRuntimeApi;
 use serde::{Deserialize, Serialize};
