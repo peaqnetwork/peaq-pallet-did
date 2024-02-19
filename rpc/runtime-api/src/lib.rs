@@ -4,7 +4,7 @@
 // The `unnecessary_mut_passed` warning originates from `decl_runtime_apis` macro.
 #![allow(clippy::unnecessary_mut_passed)]
 
-use codec::Codec;
+use parity_scale_codec::Codec;
 use peaq_pallet_did::structs::Attribute;
 use sp_std::vec::Vec;
 

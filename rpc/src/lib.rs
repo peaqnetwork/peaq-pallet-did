@@ -1,8 +1,8 @@
 use std::convert::From;
 use std::sync::Arc;
 
-use codec::Codec;
-use codec::{Decode, Encode};
+use parity_scale_codec::Codec;
+use parity_scale_codec::{Decode, Encode};
 use jsonrpsee::{
     core::{async_trait, Error as JsonRpseeError, RpcResult},
     proc_macros::rpc,
