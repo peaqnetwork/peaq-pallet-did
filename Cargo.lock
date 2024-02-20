@@ -2518,7 +2518,7 @@ dependencies = [
 
 [[package]]
 name = "peaq-pallet-did"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -2537,7 +2537,7 @@ dependencies = [
 
 [[package]]
 name = "peaq-pallet-did-rpc"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "jsonrpc-core",
  "jsonrpc-core-client",
@@ -2556,7 +2556,7 @@ dependencies = [
 
 [[package]]
 name = "peaq-pallet-did-runtime-api"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "parity-scale-codec",
  "peaq-pallet-did",
