@@ -23,8 +23,8 @@ mod benchmarking;
 // Re-export did items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
-pub mod weights;
 pub mod weightinfo;
+pub mod weights;
 pub use weightinfo::WeightInfo;
 
 #[frame_support::pallet]
