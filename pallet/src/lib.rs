@@ -146,7 +146,7 @@ pub mod pallet {
         /// Creates a new attribute as part of a DID
         /// with optional validity
         #[pallet::call_index(0)]
-        #[pallet::weight(T::WeightInfo::add_attribute())]
+        #[pallet::weight(T::WeightInfo::add_attribute(value.len() as u32))]
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
@@ -181,7 +181,7 @@ pub mod pallet {
         /// Update an existing attribute of a DID
         /// with optional validity
         #[pallet::call_index(1)]
-        #[pallet::weight(T::WeightInfo::update_attribute())]
+        #[pallet::weight(T::WeightInfo::update_attribute(value.len() as u32))]
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
