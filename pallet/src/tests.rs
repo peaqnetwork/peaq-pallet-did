@@ -1,6 +1,6 @@
 use crate::did::Did;
 use crate::{mock::*, Error};
-use frame_support::{assert_noop, assert_ok};
+use frame_support::{assert_noop, assert_ok, BoundedVec};
 use hex_literal::hex;
 
 #[test]
@@ -18,8 +18,8 @@ fn add_attribute_test() {
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec(),
-            attribute.to_vec(),
+            BoundedVec::try_from(name.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute.to_vec()).unwrap(),
             None
         ));
 
@@ -28,8 +28,8 @@ fn add_attribute_test() {
             PeaqDID::add_attribute(
                 RuntimeOrigin::signed(origin),
                 did_account,
-                name.to_vec(),
-                attribute.to_vec(),
+                BoundedVec::try_from(name.to_vec()).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
                 None
             ),
             Error::<Test>::AttributeAlreadyExist
@@ -40,9 +40,9 @@ fn add_attribute_test() {
             PeaqDID::add_attribute(
                 RuntimeOrigin::signed(origin),
                 did_account,
-                b"name".to_vec(),
-                attribute.to_vec(),
-                Some(u64::max_value()),
+                BoundedVec::try_from(b"name".to_vec()).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                Some(u64::MAX),
             ),
             Error::<Test>::MaxBlockNumberExceeded
         );
@@ -66,8 +66,8 @@ fn update_attribute_test() {
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec(),
-            attribute.to_vec(),
+            BoundedVec::try_from(name.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute.to_vec()).unwrap(),
             None
         ));
 
@@ -75,8 +75,8 @@ fn update_attribute_test() {
         assert_ok!(PeaqDID::update_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec(),
-            attribute.to_vec(),
+            BoundedVec::try_from(name.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute.to_vec()).unwrap(),
             None,
         ));
 
@@ -85,9 +85,9 @@ fn update_attribute_test() {
             PeaqDID::update_attribute(
                 RuntimeOrigin::signed(origin),
                 did_account,
-                name.to_vec(),
-                attribute.to_vec(),
-                Some(u64::max_value()),
+                BoundedVec::try_from(name.to_vec()).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                Some(u64::MAX),
             ),
             Error::<Test>::MaxBlockNumberExceeded
         );
@@ -97,8 +97,8 @@ fn update_attribute_test() {
             PeaqDID::update_attribute(
                 RuntimeOrigin::signed(fake_origin),
                 did_account,
-                name.to_vec(),
-                attribute.to_vec(),
+                BoundedVec::try_from(name.to_vec()).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
                 None,
             ),
             Error::<Test>::AttributeAuthorizationFailed
@@ -109,8 +109,8 @@ fn update_attribute_test() {
             PeaqDID::update_attribute(
                 RuntimeOrigin::signed(origin),
                 did_account,
-                b"name".to_vec(),
-                attribute.to_vec(),
+                BoundedVec::try_from(b"name".to_vec()).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
                 None,
             ),
             Error::<Test>::AttributeNotFound
@@ -131,8 +131,8 @@ fn read_attribute_test() {
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec(),
-            attribute.to_vec(),
+            BoundedVec::try_from(name.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute.to_vec()).unwrap(),
             None
         ));
 
@@ -140,7 +140,7 @@ fn read_attribute_test() {
         assert_ok!(PeaqDID::read_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec()
+            BoundedVec::try_from(name.to_vec()).unwrap()
         ));
 
         // Test read non-existing attribute
@@ -148,7 +148,7 @@ fn read_attribute_test() {
             PeaqDID::read_attribute(
                 RuntimeOrigin::signed(origin),
                 account_key("invalid"),
-                name.to_vec()
+                BoundedVec::try_from(name.to_vec()).unwrap()
             ),
             Error::<Test>::AttributeNotFound
         );
@@ -170,8 +170,8 @@ fn remove_attribute_test() {
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec(),
-            attribute.to_vec(),
+            BoundedVec::try_from(name.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute.to_vec()).unwrap(),
             None
         ));
 
@@ -179,7 +179,7 @@ fn remove_attribute_test() {
         assert_ok!(PeaqDID::remove_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            name.to_vec()
+            BoundedVec::try_from(name.to_vec()).unwrap()
         ));
 
         // Test remove another owner did attribute
@@ -187,14 +187,14 @@ fn remove_attribute_test() {
             PeaqDID::remove_attribute(
                 RuntimeOrigin::signed(fake_origin),
                 did_account,
-                name.to_vec()
+                BoundedVec::try_from(name.to_vec()).unwrap()
             ),
             Error::<Test>::AttributeAuthorizationFailed
         );
 
         // Test remove non-existing attribute
         assert_noop!(
-            PeaqDID::remove_attribute(RuntimeOrigin::signed(origin), did_account, b"name".to_vec()),
+            PeaqDID::remove_attribute(RuntimeOrigin::signed(origin), did_account, BoundedVec::try_from(b"name".to_vec()).unwrap()),
             Error::<Test>::AttributeNotFound
         );
     });

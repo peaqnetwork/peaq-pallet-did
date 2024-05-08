@@ -58,6 +58,7 @@ impl system::Config for Test {
 
 parameter_types! {
     pub const MinimumPeriod: u64 = 5;
+    pub const BoundedDataLen: u32 = 2560;
 }
 
 impl pallet_timestamp::Config for Test {
@@ -71,6 +72,7 @@ impl peaq_did::Config for Test {
     type RuntimeEvent = RuntimeEvent;
     type Time = pallet_timestamp::Pallet<Test>;
     type WeightInfo = peaq_did::weights::WeightInfo<Test>;
+    type BoundedDataLen = BoundedDataLen;
 }
 
 // Build genesis storage according to the mock runtime.

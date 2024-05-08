@@ -8,51 +8,58 @@ use crate::Pallet as DID;
 use frame_benchmarking::v1::{account, benchmarks, impl_benchmark_test_suite};
 use frame_system::{Pallet as System, RawOrigin};
 use num_traits::bounds::UpperBounded;
+use sp_runtime::BoundedVec;
+use sp_std::vec;
 
 /// Assert that the last event equals the provided one.
 fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
     System::<T>::assert_last_event(generic_event.into());
 }
 
+const MAX_ATTRIBUTE_BYTES_LEN: u32 = 2560;
 const CALLER_ACCOUNT_STR: &str = "Iredia1";
 const DID_ACCOUNT_STR: &str = "Iredia2";
-const NAME_BYTES: &[u8; 2] = b"id";
-const ATTRITUBE_BYTES: &[u8; 17] = b"did:pq:1234567890";
+const ATTRITUBE_BYTES: &[u8; MAX_ATTRIBUTE_BYTES_LEN as usize] = &[0; MAX_ATTRIBUTE_BYTES_LEN as usize];
 
 benchmarks! {
     add_attribute {
+        let i in 0 .. MAX_ATTRIBUTE_BYTES_LEN;
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), ATTRITUBE_BYTES.to_vec(), None)
+        let new_attribute = BoundedVec::try_from([1; MAX_ATTRIBUTE_BYTES_LEN as usize].to_vec()).expect("Length is within bounds");
+        let name = BoundedVec::try_from(vec![1; 64]).unwrap();
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.clone(), new_attribute, None)
     verify {
         assert_last_event::<T>(Event::<T>::AttributeAdded(
             caller,
             did_account,
-            NAME_BYTES.to_vec(),
-            ATTRITUBE_BYTES.to_vec(),
+            name.clone(),
+            BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).unwrap(),
             None,
         ).into());
     }
 
     update_attribute {
+        let i in 0 .. MAX_ATTRIBUTE_BYTES_LEN;
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
-        let new_attribute = b"did:pq:0987654321";
+        let new_attribute = BoundedVec::<u8, T::BoundedDataLen>::try_from([1; MAX_ATTRIBUTE_BYTES_LEN as usize].to_vec()).unwrap();
+        let name = BoundedVec::try_from(vec![1; 64]).unwrap();
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
-            NAME_BYTES.to_vec(),
-            ATTRITUBE_BYTES.to_vec(),
+            name.clone(),
+            BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).unwrap(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec(), new_attribute.to_vec(), None)
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.clone(), new_attribute.clone(), None)
     verify {
         assert_last_event::<T>(Event::<T>::AttributeUpdated(
             caller.clone(),
             did_account.clone(),
-            NAME_BYTES.to_vec(),
-            new_attribute.to_vec(),
+            name,
+            new_attribute,
             None,
         ).into());
     }
@@ -61,16 +68,17 @@ benchmarks! {
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+        let name = BoundedVec::try_from(vec![1; 64]).unwrap();
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
-            NAME_BYTES.to_vec(),
-            ATTRITUBE_BYTES.to_vec(),
+            name.clone(),
+            BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).unwrap(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account, NAME_BYTES.to_vec())
+    }: _(RawOrigin::Signed(caller.clone()), did_account, name.clone())
     verify {
         let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
-            name: NAME_BYTES.to_vec(),
+            name: vec![1; 64],
             value: ATTRITUBE_BYTES.to_vec(),
             validity: T::BlockNumber::max_value(),
             created: T::Time::now(),
@@ -81,18 +89,20 @@ benchmarks! {
     remove_attribute {
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
+        let name = BoundedVec::try_from(vec![1; 64]).unwrap();
+        
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
-            NAME_BYTES.to_vec(),
-            ATTRITUBE_BYTES.to_vec(),
+            name.clone(),
+            BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).unwrap(),
             None)?;
-    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), NAME_BYTES.to_vec())
+    }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.clone())
     verify {
         assert_last_event::<T>(Event::<T>::AttributeRemoved(
             caller.clone(),
             did_account,
-            NAME_BYTES.to_vec(),
+            name,
         ).into());
     }
 

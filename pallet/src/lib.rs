@@ -23,8 +23,8 @@ mod benchmarking;
 // Re-export did items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
-pub mod weights;
 pub mod weightinfo;
+pub mod weights;
 pub use weightinfo::WeightInfo;
 
 #[frame_support::pallet]
@@ -50,6 +50,9 @@ pub mod pallet {
         type Time: MomentTime;
         /// Weight information for extrinsics in this pallet.
         type WeightInfo: WeightInfo;
+
+        #[pallet::constant]
+        type BoundedDataLen: Get<u32>;
     }
 
     // Pallets use events to inform users when important changes are made.
@@ -62,8 +65,8 @@ pub mod pallet {
         AttributeAdded(
             T::AccountId,
             T::AccountId,
-            Vec<u8>,
-            Vec<u8>,
+            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, T::BoundedDataLen>,
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute is read successfully
@@ -72,12 +75,12 @@ pub mod pallet {
         AttributeUpdated(
             T::AccountId,
             T::AccountId,
-            Vec<u8>,
-            Vec<u8>,
+            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, T::BoundedDataLen>,
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
-        AttributeRemoved(T::AccountId, T::AccountId, Vec<u8>),
+        AttributeRemoved(T::AccountId, T::AccountId, BoundedVec<u8, T::BoundedDataLen>),
     }
 
     #[pallet::error]
@@ -146,12 +149,12 @@ pub mod pallet {
         /// Creates a new attribute as part of a DID
         /// with optional validity
         #[pallet::call_index(0)]
-        #[pallet::weight(T::WeightInfo::add_attribute())]
+        #[pallet::weight(T::WeightInfo::add_attribute(value.len() as u32))]
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
-            value: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
+            value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -181,12 +184,12 @@ pub mod pallet {
         /// Update an existing attribute of a DID
         /// with optional validity
         #[pallet::call_index(1)]
-        #[pallet::weight(T::WeightInfo::update_attribute())]
+        #[pallet::weight(T::WeightInfo::update_attribute(value.len() as u32))]
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
-            value: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
+            value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -218,7 +221,7 @@ pub mod pallet {
         pub fn read_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -241,7 +244,7 @@ pub mod pallet {
         pub fn remove_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
