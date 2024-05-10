@@ -12,10 +12,12 @@ type Block = frame_system::mocking::MockBlock<Test>;
 
 pub(crate) type Balance = u128;
 pub(crate) type AccountId = sr25519::Public;
+pub(crate) type Moment = u64;
 
 pub(crate) const EXISTENTIAL_DEPOSIT: Balance = 2;
 pub(crate) const DEPOSIT_BASE: Balance = 100;
 pub(crate) const DEPOSIT_PER_BYTE: Balance = 2;
+pub(crate) const BOUNDED_DATA_LEN: u32 = 2560;
 
 // Configure a mock runtime to test the pallet.
 frame_support::construct_runtime!(
@@ -66,11 +68,11 @@ impl system::Config for Test {
 
 parameter_types! {
     pub const MinimumPeriod: u64 = 5;
-    pub const BoundedDataLen: u32 = 2560;
+    pub const BoundedDataLen: u32 = BOUNDED_DATA_LEN;
 }
 
 impl pallet_timestamp::Config for Test {
-    type Moment = u64;
+    type Moment = Moment;
     type OnTimestampSet = ();
     type MinimumPeriod = MinimumPeriod;
     type WeightInfo = ();

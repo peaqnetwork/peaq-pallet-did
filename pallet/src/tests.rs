@@ -1,10 +1,19 @@
-use crate::did::Did;
+use crate::{did::Did, Config};
 use crate::{mock::*, Error};
+use codec::MaxEncodedLen;
 use frame_support::{assert_noop, assert_ok, BoundedVec};
 use hex_literal::hex;
 
 pub(crate) const NAME: &[u8] = b"id";
 pub(crate) const ATTRIBUTE: &[u8] = b"did:pq:1234567890";
+
+fn expected_deposit() -> Balance {
+    (DEPOSIT_PER_BYTE
+        * ((BOUNDED_DATA_LEN * 2)
+            + Moment::max_encoded_len() as u32
+            + AccountId::max_encoded_len() as u32) as Balance)
+        + DEPOSIT_BASE
+}
 
 #[test]
 fn add_attribute_test() {
@@ -20,6 +29,12 @@ fn add_attribute_test() {
             BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
 
         // Test for duplicate entry
         assert_noop!(
@@ -56,6 +71,12 @@ fn add_attribute_test() {
             ),
             Error::<Test>::AttributeNameExceedMax64
         );
+
+        // verify deposit didnt change after invalid extrinsics
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
     });
 }
 
@@ -73,6 +94,12 @@ fn update_attribute_test() {
             BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
 
         // Test update owner did attribute
         assert_ok!(PeaqDID::update_attribute(
@@ -178,12 +205,21 @@ fn remove_attribute_test() {
             None
         ));
 
+        // correct storage deposit was deducted or not
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
+
         // Test remove owner did attribute
         assert_ok!(PeaqDID::remove_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
             BoundedVec::try_from(NAME.to_vec()).unwrap()
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(<Test as Config>::Currency::reserved_balance(&origin), 0);
 
         // Test remove another owner did attribute
         assert_noop!(
