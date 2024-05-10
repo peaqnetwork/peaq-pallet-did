@@ -80,7 +80,11 @@ pub mod pallet {
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
-        AttributeRemoved(T::AccountId, T::AccountId, BoundedVec<u8, T::BoundedDataLen>),
+        AttributeRemoved(
+            T::AccountId,
+            T::AccountId,
+            BoundedVec<u8, T::BoundedDataLen>,
+        ),
     }
 
     #[pallet::error]

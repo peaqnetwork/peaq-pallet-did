@@ -19,7 +19,8 @@ fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
 const MAX_ATTRIBUTE_BYTES_LEN: u32 = 2560;
 const CALLER_ACCOUNT_STR: &str = "Iredia1";
 const DID_ACCOUNT_STR: &str = "Iredia2";
-const ATTRITUBE_BYTES: &[u8; MAX_ATTRIBUTE_BYTES_LEN as usize] = &[0; MAX_ATTRIBUTE_BYTES_LEN as usize];
+const ATTRITUBE_BYTES: &[u8; MAX_ATTRIBUTE_BYTES_LEN as usize] =
+    &[0; MAX_ATTRIBUTE_BYTES_LEN as usize];
 
 benchmarks! {
     add_attribute {
@@ -90,7 +91,7 @@ benchmarks! {
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
         let name = BoundedVec::try_from(vec![1; 64]).unwrap();
-        
+
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
             did_account.clone(),
