@@ -34,12 +34,16 @@ pub mod pallet {
     use crate::did::*;
     use crate::structs::*;
     use frame_support::pallet_prelude::*;
-    pub use frame_support::traits::Time as MomentTime;
+    pub use frame_support::traits::{Currency, ReservableCurrency, Time as MomentTime};
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
     use sp_runtime::traits::Bounded;
     use sp_runtime::traits::CheckedAdd;
     use sp_std::vec::Vec;
+
+    pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
+    pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
+    pub type TimeOf<T> = <<T as Config>::Time as MomentTime>::Moment;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
     #[pallet::config]
@@ -53,6 +57,16 @@ pub mod pallet {
 
         #[pallet::constant]
         type BoundedDataLen: Get<u32>;
+
+        #[pallet::constant]
+        type StorageDepositBase: Get<BalanceOf<Self>>;
+
+        /// Deposit amount per byte
+        #[pallet::constant]
+        type StorageDepositPerByte: Get<BalanceOf<Self>>;
+
+        /// Currency Type
+        type Currency: ReservableCurrency<Self::AccountId>;
     }
 
     // Pallets use events to inform users when important changes are made.
@@ -169,6 +183,7 @@ pub mod pallet {
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
 
+            T::Currency::reserve(&sender, Self::deposit_amount())?;
             match Self::create(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
                     Self::deposit_event(Event::AttributeAdded(
@@ -258,6 +273,7 @@ pub mod pallet {
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
 
+            T::Currency::unreserve(&sender, Self::deposit_amount());
             match Self::delete(&sender, &did_account, &name) {
                 Ok(()) => {
                     // Get the block number from the FRAME system pallet
@@ -421,6 +437,22 @@ pub mod pallet {
             };
 
             Ok(validity)
+        }
+    }
+
+    impl<T: Config> Pallet<T> {
+        /// NOTE this is manually configured based on attributes of Attribute struct,
+        /// was Attribute struct to change in the future, this function would be modified also
+        pub fn deposit_amount() -> BalanceOf<T> {
+            // see pub struct Attribute
+            let attribute_size = (T::BoundedDataLen::get() * 2) as usize
+                + T::AccountId::max_encoded_len()
+                + TimeOf::<T>::max_encoded_len();
+
+            // amount for the storage deposit
+            let deposit = T::StorageDepositBase::get()
+                + (BalanceOf::<T>::from(attribute_size as u32) * T::StorageDepositPerByte::get());
+            deposit
         }
     }
 }
