@@ -46,6 +46,18 @@ fn add_attribute_test() {
             ),
             Error::<Test>::MaxBlockNumberExceeded
         );
+
+        // Test add attibute with invalid name length
+        assert_noop!(
+            PeaqDID::add_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(vec![0; 70]).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                None
+            ),
+            Error::<Test>::AttributeNameExceedMax64
+        );
     });
 }
 
@@ -114,6 +126,18 @@ fn update_attribute_test() {
                 None,
             ),
             Error::<Test>::AttributeNotFound
+        );
+
+        // Test update attibute with invalid name length
+        assert_noop!(
+            PeaqDID::update_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(vec![0; 70]).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                None
+            ),
+            Error::<Test>::AttributeNameExceedMax64
         );
     });
 }
@@ -194,7 +218,11 @@ fn remove_attribute_test() {
 
         // Test remove non-existing attribute
         assert_noop!(
-            PeaqDID::remove_attribute(RuntimeOrigin::signed(origin), did_account, BoundedVec::try_from(b"name".to_vec()).unwrap()),
+            PeaqDID::remove_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(b"name".to_vec()).unwrap()
+            ),
             Error::<Test>::AttributeNotFound
         );
     });
