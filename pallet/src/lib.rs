@@ -37,8 +37,7 @@ pub mod pallet {
     pub use frame_support::traits::{Currency, ReservableCurrency, Time as MomentTime};
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
-    use sp_runtime::traits::Bounded;
-    use sp_runtime::traits::CheckedAdd;
+    use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
 
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
@@ -450,8 +449,10 @@ pub mod pallet {
                 + TimeOf::<T>::max_encoded_len();
 
             // amount for the storage deposit
-            let deposit = T::StorageDepositBase::get()
-                + (BalanceOf::<T>::from(attribute_size as u32) * T::StorageDepositPerByte::get());
+            let deposit = T::StorageDepositBase::get().saturating_add(
+                BalanceOf::<T>::from(attribute_size as u32)
+                    .saturating_mul(T::StorageDepositPerByte::get()),
+            );
             deposit
         }
     }
