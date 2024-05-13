@@ -1,35 +1,48 @@
-use crate::did::Did;
+use crate::{did::Did, Config};
 use crate::{mock::*, Error};
+use codec::MaxEncodedLen;
 use frame_support::{assert_noop, assert_ok, BoundedVec};
 use hex_literal::hex;
+
+pub(crate) const NAME: &[u8] = b"id";
+pub(crate) const ATTRIBUTE: &[u8] = b"did:pq:1234567890";
+
+fn expected_deposit() -> Balance {
+    (DEPOSIT_PER_BYTE
+        * ((BOUNDED_DATA_LEN * 2)
+            + Moment::max_encoded_len() as u32
+            + AccountId::max_encoded_len() as u32) as Balance)
+        + DEPOSIT_BASE
+}
 
 #[test]
 fn add_attribute_test() {
     new_test_ext().execute_with(|| {
         System::set_block_number(1);
 
-        let acct = "Iredia";
-        let acct2 = "Iredia2";
-        let origin = account_key(acct);
-        let did_account = account_key(acct2);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+        let (origin, did_account, _, _, _) = test_accounts();
 
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap(),
-            BoundedVec::try_from(attribute.to_vec()).unwrap(),
+            BoundedVec::try_from(NAME.to_vec()).unwrap(),
+            BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
 
         // Test for duplicate entry
         assert_noop!(
             PeaqDID::add_attribute(
                 RuntimeOrigin::signed(origin),
                 did_account,
-                BoundedVec::try_from(name.to_vec()).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(NAME.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 None
             ),
             Error::<Test>::AttributeAlreadyExist
@@ -41,7 +54,7 @@ fn add_attribute_test() {
                 RuntimeOrigin::signed(origin),
                 did_account,
                 BoundedVec::try_from(b"name".to_vec()).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 Some(u64::MAX),
             ),
             Error::<Test>::MaxBlockNumberExceeded
@@ -53,10 +66,16 @@ fn add_attribute_test() {
                 RuntimeOrigin::signed(origin),
                 did_account,
                 BoundedVec::try_from(vec![0; 70]).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 None
             ),
             Error::<Test>::AttributeNameExceedMax64
+        );
+
+        // verify deposit didnt change after invalid extrinsics
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
         );
     });
 }
@@ -66,29 +85,28 @@ fn update_attribute_test() {
     new_test_ext().execute_with(|| {
         System::set_block_number(1);
 
-        let acct = "Iredia";
-        let acct2 = "Iredia2";
-        let acct3 = "Fake";
-        let origin = account_key(acct);
-        let did_account = account_key(acct2);
-        let fake_origin = account_key(acct3);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+        let (origin, did_account, fake_origin, _, _) = test_accounts();
 
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap(),
-            BoundedVec::try_from(attribute.to_vec()).unwrap(),
+            BoundedVec::try_from(NAME.to_vec()).unwrap(),
+            BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
 
         // Test update owner did attribute
         assert_ok!(PeaqDID::update_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap(),
-            BoundedVec::try_from(attribute.to_vec()).unwrap(),
+            BoundedVec::try_from(NAME.to_vec()).unwrap(),
+            BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None,
         ));
 
@@ -97,8 +115,8 @@ fn update_attribute_test() {
             PeaqDID::update_attribute(
                 RuntimeOrigin::signed(origin),
                 did_account,
-                BoundedVec::try_from(name.to_vec()).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(NAME.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 Some(u64::MAX),
             ),
             Error::<Test>::MaxBlockNumberExceeded
@@ -109,8 +127,8 @@ fn update_attribute_test() {
             PeaqDID::update_attribute(
                 RuntimeOrigin::signed(fake_origin),
                 did_account,
-                BoundedVec::try_from(name.to_vec()).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(NAME.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 None,
             ),
             Error::<Test>::AttributeAuthorizationFailed
@@ -122,7 +140,7 @@ fn update_attribute_test() {
                 RuntimeOrigin::signed(origin),
                 did_account,
                 BoundedVec::try_from(b"name".to_vec()).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 None,
             ),
             Error::<Test>::AttributeNotFound
@@ -134,7 +152,7 @@ fn update_attribute_test() {
                 RuntimeOrigin::signed(origin),
                 did_account,
                 BoundedVec::try_from(vec![0; 70]).unwrap(),
-                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 None
             ),
             Error::<Test>::AttributeNameExceedMax64
@@ -144,19 +162,14 @@ fn update_attribute_test() {
 
 #[test]
 fn read_attribute_test() {
-    new_test_ext().execute_with(|| {
-        let acct = "Iredia";
-        let acct2 = "Iredia2";
-        let origin = account_key(acct);
-        let did_account = account_key(acct2);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+    let (origin, _, _, did_account, did_account1) = test_accounts();
 
+    new_test_ext().execute_with(|| {
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap(),
-            BoundedVec::try_from(attribute.to_vec()).unwrap(),
+            BoundedVec::try_from(NAME.to_vec()).unwrap(),
+            BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None
         ));
 
@@ -164,15 +177,15 @@ fn read_attribute_test() {
         assert_ok!(PeaqDID::read_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap()
+            BoundedVec::try_from(NAME.to_vec()).unwrap()
         ));
 
         // Test read non-existing attribute
         assert_noop!(
             PeaqDID::read_attribute(
                 RuntimeOrigin::signed(origin),
-                account_key("invalid"),
-                BoundedVec::try_from(name.to_vec()).unwrap()
+                did_account1,
+                BoundedVec::try_from(NAME.to_vec()).unwrap()
             ),
             Error::<Test>::AttributeNotFound
         );
@@ -182,36 +195,38 @@ fn read_attribute_test() {
 #[test]
 fn remove_attribute_test() {
     new_test_ext().execute_with(|| {
-        let acct = "Iredia";
-        let acct2 = "Iredia2";
-        let acct3 = "Fake";
-        let origin = account_key(acct);
-        let did_account = account_key(acct2);
-        let fake_origin = account_key(acct3);
-        let name = b"id";
-        let attribute = b"did:pq:1234567890";
+        let (origin, origin1, _, did_account, _) = test_accounts();
 
         assert_ok!(PeaqDID::add_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap(),
-            BoundedVec::try_from(attribute.to_vec()).unwrap(),
+            BoundedVec::try_from(NAME.to_vec()).unwrap(),
+            BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
             None
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(
+            <Test as Config>::Currency::reserved_balance(&origin),
+            expected_deposit()
+        );
 
         // Test remove owner did attribute
         assert_ok!(PeaqDID::remove_attribute(
             RuntimeOrigin::signed(origin),
             did_account,
-            BoundedVec::try_from(name.to_vec()).unwrap()
+            BoundedVec::try_from(NAME.to_vec()).unwrap()
         ));
+
+        // correct storage deposit was deducted or not
+        assert_eq!(<Test as Config>::Currency::reserved_balance(&origin), 0);
 
         // Test remove another owner did attribute
         assert_noop!(
             PeaqDID::remove_attribute(
-                RuntimeOrigin::signed(fake_origin),
+                RuntimeOrigin::signed(origin1),
                 did_account,
-                BoundedVec::try_from(name.to_vec()).unwrap()
+                BoundedVec::try_from(NAME.to_vec()).unwrap()
             ),
             Error::<Test>::AttributeAuthorizationFailed
         );
