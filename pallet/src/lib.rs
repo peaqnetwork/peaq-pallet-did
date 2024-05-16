@@ -34,7 +34,7 @@ pub mod pallet {
     use crate::did::*;
     use crate::structs::*;
     use frame_support::pallet_prelude::*;
-    pub use frame_support::traits::{Currency, ReservableCurrency, Time as MomentTime};
+    pub use frame_support::traits::{Currency, NamedReservableCurrency, Time as MomentTime};
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
     use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
@@ -43,6 +43,9 @@ pub mod pallet {
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
     pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
     pub type TimeOf<T> = <<T as Config>::Time as MomentTime>::Moment;
+    pub type ReserveIdentifierOf<T> = <<T as Config>::Currency as NamedReservableCurrency<
+        <T as frame_system::Config>::AccountId,
+    >>::ReserveIdentifier;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
     #[pallet::config]
@@ -65,7 +68,9 @@ pub mod pallet {
         type StorageDepositPerByte: Get<BalanceOf<Self>>;
 
         /// Currency Type
-        type Currency: ReservableCurrency<Self::AccountId>;
+        type Currency: NamedReservableCurrency<Self::AccountId>;
+
+        type ReserveIdentifier: Get<ReserveIdentifierOf<Self>>;
     }
 
     // Pallets use events to inform users when important changes are made.
@@ -182,7 +187,11 @@ pub mod pallet {
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
 
-            T::Currency::reserve(&sender, Self::deposit_amount())?;
+            T::Currency::reserve_named(
+                &T::ReserveIdentifier::get(),
+                &sender,
+                Self::deposit_amount())?;
+
             match Self::create(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
                     Self::deposit_event(Event::AttributeAdded(
@@ -272,7 +281,10 @@ pub mod pallet {
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
 
-            T::Currency::unreserve(&sender, Self::deposit_amount());
+            T::Currency::unreserve_named(
+                &T::ReserveIdentifier::get(),
+                &sender, Self::deposit_amount());
+
             match Self::delete(&sender, &did_account, &name) {
                 Ok(()) => {
                     // Get the block number from the FRAME system pallet
