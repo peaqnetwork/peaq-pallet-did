@@ -190,7 +190,8 @@ pub mod pallet {
             T::Currency::reserve_named(
                 &T::ReserveIdentifier::get(),
                 &sender,
-                Self::deposit_amount())?;
+                Self::deposit_amount(),
+            )?;
 
             match Self::create(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
@@ -283,7 +284,9 @@ pub mod pallet {
 
             T::Currency::unreserve_named(
                 &T::ReserveIdentifier::get(),
-                &sender, Self::deposit_amount());
+                &sender,
+                Self::deposit_amount(),
+            );
 
             match Self::delete(&sender, &did_account, &name) {
                 Ok(()) => {
