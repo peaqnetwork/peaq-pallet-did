@@ -303,8 +303,22 @@ pub mod pallet {
     impl<T: Config> Did<T::AccountId, T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>
         for Pallet<T>
     {
-        fn is_owner(owner: &T::AccountId, did_account: &T::AccountId) -> Result<(), DidError> {
-            let id = (&owner, &did_account).using_encoded(blake2_256);
+        fn is_owner(
+            owner: &T::AccountId,
+            did_account: &T::AccountId,
+            name: &[u8],
+        ) -> Result<(), DidError> {
+            // Check for old key
+            let mut id = (&owner, &did_account).using_encoded(blake2_256);
+            if <OwnerStore<T>>::contains_key((&owner, &id)) {
+                // Add new key
+                let new_id = (&owner, &did_account, &name).using_encoded(blake2_256);
+                <OwnerStore<T>>::insert((&owner, &new_id), did_account);
+                // Remove old key
+                <OwnerStore<T>>::remove((&owner, &id));
+            }
+
+            id = (&owner, &did_account, &name).using_encoded(blake2_256);
 
             // Check if attribute already exists
             if !<OwnerStore<T>>::contains_key((&owner, &id)) {
@@ -349,7 +363,8 @@ pub mod pallet {
 
             // Store the owner of the did_account for further validation
             // when modification is requested
-            let id = (&owner, &did_account).using_encoded(blake2_256);
+            // Include the attribute name in the hash
+            let id = (&owner, &did_account, &name).using_encoded(blake2_256);
             <OwnerStore<T>>::insert((&owner, &id), did_account);
 
             Ok(())
@@ -364,7 +379,7 @@ pub mod pallet {
             valid_for: Option<T::BlockNumber>,
         ) -> Result<(), DidError> {
             // check if the sender is the owner
-            Self::is_owner(owner, did_account)?;
+            Self::is_owner(owner, did_account, name)?;
 
             // validate block number to prevent an overflow
             let validity = match Self::validate_block_number(valid_for) {
@@ -410,7 +425,7 @@ pub mod pallet {
             name: &[u8],
         ) -> Result<(), DidError> {
             // check if the sender is the owner
-            Self::is_owner(owner, did_account)?;
+            Self::is_owner(owner, did_account, name)?;
 
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
@@ -464,11 +479,10 @@ pub mod pallet {
                 + TimeOf::<T>::max_encoded_len();
 
             // amount for the storage deposit
-            let deposit = T::StorageDepositBase::get().saturating_add(
+            T::StorageDepositBase::get().saturating_add(
                 BalanceOf::<T>::from(attribute_size as u32)
                     .saturating_mul(T::StorageDepositPerByte::get()),
-            );
-            deposit
+            )
         }
     }
 }

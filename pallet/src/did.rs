@@ -11,7 +11,7 @@ pub enum DidError {
 }
 
 pub trait Did<AccountId, BlockNumber, Moment> {
-    fn is_owner(owner: &AccountId, did_address: &AccountId) -> Result<(), DidError>;
+    fn is_owner(owner: &AccountId, did_address: &AccountId, name: &[u8]) -> Result<(), DidError>;
     fn create(
         owner: &AccountId,
         did_address: &AccountId,
