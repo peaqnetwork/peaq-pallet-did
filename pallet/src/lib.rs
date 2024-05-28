@@ -308,24 +308,22 @@ pub mod pallet {
             did_account: &T::AccountId,
             name: &[u8],
         ) -> Result<(), DidError> {
+            let mut id = (&owner, &did_account, &name).using_encoded(blake2_256);
+            // Check if attribute already exists
+            if <OwnerStore<T>>::contains_key((&owner, &id)) {
+                return Ok(());
+            }
             // Check for old key
-            let mut id = (&owner, &did_account).using_encoded(blake2_256);
+            id = (&owner, &did_account).using_encoded(blake2_256);
             if <OwnerStore<T>>::contains_key((&owner, &id)) {
                 // Add new key
                 let new_id = (&owner, &did_account, &name).using_encoded(blake2_256);
                 <OwnerStore<T>>::insert((&owner, &new_id), did_account);
                 // Remove old key
                 <OwnerStore<T>>::remove((&owner, &id));
+                return Ok(());
             }
-
-            id = (&owner, &did_account, &name).using_encoded(blake2_256);
-
-            // Check if attribute already exists
-            if !<OwnerStore<T>>::contains_key((&owner, &id)) {
-                return Err(DidError::AuthorizationFailed);
-            }
-
-            Ok(())
+            return Err(DidError::AuthorizationFailed);
         }
 
         // Add new attribute to a did
