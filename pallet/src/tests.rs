@@ -143,7 +143,7 @@ fn update_attribute_test() {
                 BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
                 None,
             ),
-            Error::<Test>::AttributeNotFound
+            Error::<Test>::AttributeAuthorizationFailed
         );
 
         // Test update attibute with invalid name length
@@ -238,7 +238,7 @@ fn remove_attribute_test() {
                 did_account,
                 BoundedVec::try_from(b"name".to_vec()).unwrap()
             ),
-            Error::<Test>::AttributeNotFound
+            Error::<Test>::AttributeAuthorizationFailed
         );
     });
 }
@@ -257,5 +257,73 @@ fn hashed_key_correctness_test() {
             PeaqDID::get_hashed_key_for_attr(&did_account, &name[..]),
             expected_result
         )
+    });
+}
+
+// This test was made in order to make sure that even after adding a new attribute for the same account you cannot modify other's people attributes
+#[test]
+fn override_did_attribute() {
+    new_test_ext().execute_with(|| {
+        let (alice_key, bob_key, _, did_account_key, _) = test_accounts();
+
+        let name = b"id";
+        let attribute = b"did:pq:true";
+
+        let name2 = b"random";
+        let attribute2 = b"did:pq:random";
+
+        let attribute_overriden = b"did:pq:false";
+
+        // Alice creates a DID attribute for did_account
+        assert_ok!(PeaqDID::add_attribute(
+            RuntimeOrigin::signed(alice_key),
+            did_account_key,
+            BoundedVec::try_from(name.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute.to_vec()).unwrap(),
+            None
+        ));
+
+        // Bob cannot edit Alice's attribute for did_account
+        assert_noop!(
+            PeaqDID::update_attribute(
+                RuntimeOrigin::signed(bob_key),
+                did_account_key,
+                BoundedVec::try_from(name.to_vec()).unwrap(),
+                BoundedVec::try_from(attribute.to_vec()).unwrap(),
+                None,
+            ),
+            Error::<Test>::AttributeAuthorizationFailed
+        );
+
+        // Bob adds a new attribute to did_account
+        assert_ok!(PeaqDID::add_attribute(
+            RuntimeOrigin::signed(bob_key),
+            did_account_key,
+            BoundedVec::try_from(name2.to_vec()).unwrap(),
+            BoundedVec::try_from(attribute2.to_vec()).unwrap(),
+            None
+        ));
+
+        // Bob cannot override the attribute Alice created
+        assert_noop!(
+            PeaqDID::update_attribute(
+                RuntimeOrigin::signed(bob_key),
+                did_account_key,
+                BoundedVec::try_from(name.to_vec()).unwrap(),
+                BoundedVec::try_from(attribute_overriden.to_vec()).unwrap(),
+                None,
+            ),
+            Error::<Test>::AttributeAuthorizationFailed
+        );
+
+        // Bob cannot remove the attribute Alice created.
+        assert_noop!(
+            PeaqDID::remove_attribute(
+                RuntimeOrigin::signed(bob_key),
+                did_account_key,
+                BoundedVec::try_from(name.to_vec()).unwrap(),
+            ),
+            Error::<Test>::AttributeAuthorizationFailed
+        );
     });
 }
