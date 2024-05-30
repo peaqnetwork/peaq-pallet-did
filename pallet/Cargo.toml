@@ -27,8 +27,8 @@ sp-rpc = { workspace = true, default-features = false, optional = true}
 sp-io = { workspace = true, default-features = false}
 sp-std = { workspace = true, default-features = false}
 pallet-timestamp = { workspace = true, default-features = false}
+pallet-balances = { workspace = true, default-features = false}
 num-traits = { workspace = true, default-features = false }
-
 
 [features]
 default = ["std"]
@@ -46,5 +46,6 @@ std = [
     "sp-core/std",
 	"pallet-timestamp/std",
 	"num-traits/std",
+    "pallet-balances/std"
 ]
 try-runtime = ["frame-support/try-runtime"]

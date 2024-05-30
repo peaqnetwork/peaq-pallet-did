@@ -21,6 +21,7 @@ sp-io = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "release
 
 sp-std = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "release-polkadot-v1.1.0", default-features = false }
 pallet-timestamp = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "release-polkadot-v1.1.0", default-features = false }
+pallet-balances = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "release-polkadot-v1.1.0", default-features = false }
 num-traits = { version = "0.2.18", default-features = false }
 
 serde = { version = "1.0.136" }

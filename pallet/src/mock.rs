@@ -9,12 +9,22 @@ use sp_runtime::{
 
 type Block = frame_system::mocking::MockBlock<Test>;
 
+pub(crate) type Balance = u128;
+pub(crate) type AccountId = sr25519::Public;
+pub(crate) type Moment = u64;
+
+pub(crate) const EXISTENTIAL_DEPOSIT: Balance = 2;
+pub(crate) const DEPOSIT_BASE: Balance = 100;
+pub(crate) const DEPOSIT_PER_BYTE: Balance = 2;
+pub(crate) const BOUNDED_DATA_LEN: u32 = 2560;
+
 // Configure a mock runtime to test the pallet.
 frame_support::construct_runtime!(
     pub enum Test
     {
         System: frame_system,
         Timestamp: pallet_timestamp,
+        Balances: pallet_balances,
         PeaqDID: peaq_did,
     }
 );
@@ -36,13 +46,13 @@ impl system::Config for Test {
     type Block = Block;
     type Hash = H256;
     type Hashing = BlakeTwo256;
-    type AccountId = sr25519::Public;
+    type AccountId = AccountId;
     type Lookup = IdentityLookup<Self::AccountId>;
     type RuntimeEvent = RuntimeEvent;
     type BlockHashCount = BlockHashCount;
     type Version = ();
     type PalletInfo = PalletInfo;
-    type AccountData = ();
+    type AccountData = pallet_balances::AccountData<Balance>;
     type OnNewAccount = ();
     type OnKilledAccount = ();
     type SystemWeightInfo = ();
@@ -53,27 +63,87 @@ impl system::Config for Test {
 
 parameter_types! {
     pub const MinimumPeriod: u64 = 5;
+    pub const BoundedDataLen: u32 = BOUNDED_DATA_LEN;
 }
 
 impl pallet_timestamp::Config for Test {
-    type Moment = u64;
+    type Moment = Moment;
     type OnTimestampSet = ();
     type MinimumPeriod = MinimumPeriod;
     type WeightInfo = ();
+}
+
+parameter_types! {
+    pub const MaxLocks: u32 = 4;
+    pub const MaxReserves: u32 = 4;
+    pub const ExistentialDeposit: Balance = EXISTENTIAL_DEPOSIT;
+}
+
+impl pallet_balances::Config for Test {
+    type MaxLocks = MaxLocks;
+    type MaxReserves = MaxReserves;
+    type ReserveIdentifier = [u8; 8];
+    type Balance = Balance;
+    type RuntimeEvent = RuntimeEvent;
+    type DustRemoval = ();
+    type ExistentialDeposit = ExistentialDeposit;
+    type AccountStore = System;
+    type WeightInfo = ();
+    type FreezeIdentifier = ();
+    type MaxHolds = ();
+    type MaxFreezes = ();
+    type RuntimeHoldReason = ();
+}
+
+parameter_types! {
+    pub const StorageDepositBase: Balance = DEPOSIT_BASE;
+    pub const StorageDepositPerByte: Balance = DEPOSIT_PER_BYTE;
+    pub const StorageReserveIdentifier: [u8; 8] = [b'p', b'e', b'a', b'q', b'_', b'd', b'i', b'd'];
 }
 
 impl peaq_did::Config for Test {
     type RuntimeEvent = RuntimeEvent;
     type Time = pallet_timestamp::Pallet<Test>;
     type WeightInfo = peaq_did::weights::WeightInfo<Test>;
+    type BoundedDataLen = BoundedDataLen;
+    type StorageDepositBase = StorageDepositBase;
+    type StorageDepositPerByte = StorageDepositPerByte;
+    type Currency = Balances;
+    type ReserveIdentifier = StorageReserveIdentifier;
 }
 
 // Build genesis storage according to the mock runtime.
 pub fn new_test_ext() -> sp_io::TestExternalities {
-    system::GenesisConfig::<Test>::default()
+    let (acc1, acc2, acc3, _, _) = test_accounts();
+    let mut storage = frame_system::GenesisConfig::<Test>::default()
         .build_storage()
-        .unwrap()
-        .into()
+        .unwrap();
+
+    // This will cause some initial issuance
+    pallet_balances::GenesisConfig::<Test> {
+        balances: vec![
+            (acc1, 1400000000000000000000000000),
+            (acc2, 1400000000000000000000000000),
+            (acc3, 1400000000000000000000000000),
+        ],
+    }
+    .assimilate_storage(&mut storage)
+    .ok();
+
+    let mut ext = sp_io::TestExternalities::from(storage);
+    ext.execute_with(|| System::set_block_number(1));
+    ext
+}
+
+// First 3 accounts are funded, the rest are not.
+pub fn test_accounts() -> (AccountId, AccountId, AccountId, AccountId, AccountId) {
+    (
+        account_key("Iredia"),
+        account_key("Iredia1"),
+        account_key("Iredia2"),
+        account_key("Talha"),
+        account_key("Talha1"),
+    )
 }
 
 pub fn account_key(s: &str) -> sr25519::Public {

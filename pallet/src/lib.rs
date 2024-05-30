@@ -34,12 +34,18 @@ pub mod pallet {
     use crate::did::*;
     use crate::structs::*;
     use frame_support::pallet_prelude::*;
-    pub use frame_support::traits::Time as MomentTime;
+    pub use frame_support::traits::{Currency, NamedReservableCurrency, Time as MomentTime};
     use frame_system::pallet_prelude::*;
     use sp_io::hashing::blake2_256;
-    use sp_runtime::traits::Bounded;
-    use sp_runtime::traits::CheckedAdd;
+    use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
+
+    pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
+    pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
+    pub type TimeOf<T> = <<T as Config>::Time as MomentTime>::Moment;
+    pub type ReserveIdentifierOf<T> = <<T as Config>::Currency as NamedReservableCurrency<
+        <T as frame_system::Config>::AccountId,
+    >>::ReserveIdentifier;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
     #[pallet::config]
@@ -50,6 +56,21 @@ pub mod pallet {
         type Time: MomentTime;
         /// Weight information for extrinsics in this pallet.
         type WeightInfo: WeightInfo;
+
+        #[pallet::constant]
+        type BoundedDataLen: Get<u32>;
+
+        #[pallet::constant]
+        type StorageDepositBase: Get<BalanceOf<Self>>;
+
+        /// Deposit amount per byte
+        #[pallet::constant]
+        type StorageDepositPerByte: Get<BalanceOf<Self>>;
+
+        /// Currency Type
+        type Currency: NamedReservableCurrency<Self::AccountId>;
+
+        type ReserveIdentifier: Get<ReserveIdentifierOf<Self>>;
     }
 
     // Pallets use events to inform users when important changes are made.
@@ -62,8 +83,8 @@ pub mod pallet {
         AttributeAdded(
             T::AccountId,
             T::AccountId,
-            Vec<u8>,
-            Vec<u8>,
+            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, T::BoundedDataLen>,
             Option<BlockNumberFor<T>>,
         ),
         /// Event emitted when an attribute is read successfully
@@ -72,12 +93,16 @@ pub mod pallet {
         AttributeUpdated(
             T::AccountId,
             T::AccountId,
-            Vec<u8>,
-            Vec<u8>,
+            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, T::BoundedDataLen>,
             Option<BlockNumberFor<T>>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
-        AttributeRemoved(T::AccountId, T::AccountId, Vec<u8>),
+        AttributeRemoved(
+            T::AccountId,
+            T::AccountId,
+            BoundedVec<u8, T::BoundedDataLen>,
+        ),
     }
 
     #[pallet::error]
@@ -146,12 +171,12 @@ pub mod pallet {
         /// Creates a new attribute as part of a DID
         /// with optional validity
         #[pallet::call_index(0)]
-        #[pallet::weight(T::WeightInfo::add_attribute())]
+        #[pallet::weight(T::WeightInfo::add_attribute(value.len() as u32))]
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
-            value: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
+            value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<BlockNumberFor<T>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -161,6 +186,12 @@ pub mod pallet {
 
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+
+            T::Currency::reserve_named(
+                &T::ReserveIdentifier::get(),
+                &sender,
+                Self::deposit_amount(),
+            )?;
 
             match Self::create(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
@@ -181,12 +212,12 @@ pub mod pallet {
         /// Update an existing attribute of a DID
         /// with optional validity
         #[pallet::call_index(1)]
-        #[pallet::weight(T::WeightInfo::update_attribute())]
+        #[pallet::weight(T::WeightInfo::update_attribute(value.len() as u32))]
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
-            value: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
+            value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<BlockNumberFor<T>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -218,7 +249,7 @@ pub mod pallet {
         pub fn read_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -241,7 +272,7 @@ pub mod pallet {
         pub fn remove_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: Vec<u8>,
+            name: BoundedVec<u8, T::BoundedDataLen>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -250,6 +281,12 @@ pub mod pallet {
 
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+
+            T::Currency::unreserve_named(
+                &T::ReserveIdentifier::get(),
+                &sender,
+                Self::deposit_amount(),
+            );
 
             match Self::delete(&sender, &did_account, &name) {
                 Ok(()) => {
@@ -267,15 +304,27 @@ pub mod pallet {
         Did<T::AccountId, BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>
         for Pallet<T>
     {
-        fn is_owner(owner: &T::AccountId, did_account: &T::AccountId) -> Result<(), DidError> {
-            let id = (&owner, &did_account).using_encoded(blake2_256);
-
+        fn is_owner(
+            owner: &T::AccountId,
+            did_account: &T::AccountId,
+            name: &[u8],
+        ) -> Result<(), DidError> {
+            let mut id = (&owner, &did_account, &name).using_encoded(blake2_256);
             // Check if attribute already exists
-            if !<OwnerStore<T>>::contains_key((&owner, &id)) {
-                return Err(DidError::AuthorizationFailed);
+            if <OwnerStore<T>>::contains_key((&owner, &id)) {
+                return Ok(());
             }
-
-            Ok(())
+            // Check for old key
+            id = (&owner, &did_account).using_encoded(blake2_256);
+            if <OwnerStore<T>>::contains_key((&owner, &id)) {
+                // Add new key
+                let new_id = (&owner, &did_account, &name).using_encoded(blake2_256);
+                <OwnerStore<T>>::insert((&owner, &new_id), did_account);
+                // Remove old key
+                <OwnerStore<T>>::remove((&owner, &id));
+                return Ok(());
+            }
+            return Err(DidError::AuthorizationFailed);
         }
 
         // Add new attribute to a did
@@ -313,7 +362,8 @@ pub mod pallet {
 
             // Store the owner of the did_account for further validation
             // when modification is requested
-            let id = (&owner, &did_account).using_encoded(blake2_256);
+            // Include the attribute name in the hash
+            let id = (&owner, &did_account, &name).using_encoded(blake2_256);
             <OwnerStore<T>>::insert((&owner, &id), did_account);
 
             Ok(())
@@ -328,7 +378,7 @@ pub mod pallet {
             valid_for: Option<BlockNumberFor<T>>,
         ) -> Result<(), DidError> {
             // check if the sender is the owner
-            Self::is_owner(owner, did_account)?;
+            Self::is_owner(owner, did_account, name)?;
 
             // validate block number to prevent an overflow
             let validity = match Self::validate_block_number(valid_for) {
@@ -374,7 +424,7 @@ pub mod pallet {
             name: &[u8],
         ) -> Result<(), DidError> {
             // check if the sender is the owner
-            Self::is_owner(owner, did_account)?;
+            Self::is_owner(owner, did_account, name)?;
 
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
@@ -415,6 +465,23 @@ pub mod pallet {
             };
 
             Ok(validity)
+        }
+    }
+
+    impl<T: Config> Pallet<T> {
+        /// NOTE this is manually configured based on attributes of Attribute struct,
+        /// was Attribute struct to change in the future, this function would be modified also
+        pub fn deposit_amount() -> BalanceOf<T> {
+            // see pub struct Attribute
+            let attribute_size = (T::BoundedDataLen::get() * 2) as usize
+                + T::AccountId::max_encoded_len()
+                + TimeOf::<T>::max_encoded_len();
+
+            // amount for the storage deposit
+            T::StorageDepositBase::get().saturating_add(
+                BalanceOf::<T>::from(attribute_size as u32)
+                    .saturating_mul(T::StorageDepositPerByte::get()),
+            )
         }
     }
 }
