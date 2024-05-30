@@ -83,7 +83,7 @@ pub mod pallet {
         AttributeAdded(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, ConstU32<64>>,
             BoundedVec<u8, T::BoundedDataLen>,
             Option<T::BlockNumber>,
         ),
@@ -93,7 +93,7 @@ pub mod pallet {
         AttributeUpdated(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, ConstU32<64>>,
             BoundedVec<u8, T::BoundedDataLen>,
             Option<T::BlockNumber>,
         ),
@@ -101,7 +101,7 @@ pub mod pallet {
         AttributeRemoved(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVec<u8, ConstU32<64>>,
         ),
     }
 
@@ -175,7 +175,7 @@ pub mod pallet {
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVec<u8, ConstU32<64>>,
             value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
@@ -216,7 +216,7 @@ pub mod pallet {
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVec<u8, ConstU32<64>>,
             value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
@@ -249,7 +249,7 @@ pub mod pallet {
         pub fn read_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVec<u8, ConstU32<64>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -272,7 +272,7 @@ pub mod pallet {
         pub fn remove_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVec<u8, ConstU32<64>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
