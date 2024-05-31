@@ -98,11 +98,7 @@ pub mod pallet {
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
-        AttributeRemoved(
-            T::AccountId,
-            T::AccountId,
-            BoundedVec<u8, ConstU32<64>>,
-        ),
+        AttributeRemoved(T::AccountId, T::AccountId, BoundedVec<u8, ConstU32<64>>),
     }
 
     #[pallet::error]
@@ -123,6 +119,7 @@ pub mod pallet {
         MaxBlockNumberExceeded,
         InvalidSuppliedValue,
         ParseError,
+        AttributeNonAsciiProperty,
     }
 
     impl<T: Config> Error<T> {
@@ -137,6 +134,7 @@ pub mod pallet {
                     Err(Error::<T>::AttributeAuthorizationFailed.into())
                 }
                 DidError::MaxBlockNumberExceeded => Err(Error::<T>::MaxBlockNumberExceeded.into()),
+                DidError::NonAsciiProperty => Err(Error::<T>::AttributeNonAsciiProperty.into()),
             }
         }
     }
@@ -323,7 +321,7 @@ pub mod pallet {
                 <OwnerStore<T>>::remove((&owner, &id));
                 return Ok(());
             }
-            return Err(DidError::AuthorizationFailed);
+            Err(DidError::AuthorizationFailed)
         }
 
         // Add new attribute to a did
@@ -334,6 +332,11 @@ pub mod pallet {
             value: &[u8],
             valid_for: Option<T::BlockNumber>,
         ) -> Result<(), DidError> {
+            // Check if all characters are ascii to avoid UTF8 phishing attacks
+            if !name.is_ascii() || !value.is_ascii() {
+                return Err(DidError::NonAsciiProperty);
+            }
+
             // Generate id for integrity check
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
@@ -376,6 +379,11 @@ pub mod pallet {
             value: &[u8],
             valid_for: Option<T::BlockNumber>,
         ) -> Result<(), DidError> {
+            // Check if all characters are ascii to avoid UTF8 phishing attacks
+            if !name.is_ascii() || !value.is_ascii() {
+                return Err(DidError::NonAsciiProperty);
+            }
+
             // check if the sender is the owner
             Self::is_owner(owner, did_account, name)?;
 
