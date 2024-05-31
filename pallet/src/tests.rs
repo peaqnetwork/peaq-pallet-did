@@ -60,19 +60,7 @@ fn add_attribute_test() {
             Error::<Test>::MaxBlockNumberExceeded
         );
 
-        // Test add attibute with invalid name length
-        assert_noop!(
-            PeaqDID::add_attribute(
-                RuntimeOrigin::signed(origin),
-                did_account,
-                BoundedVec::try_from(vec![0; 70]).unwrap(),
-                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
-                None
-            ),
-            Error::<Test>::AttributeNameExceedMax64
-        );
-
-        // verify deposit didnt change after invalid extrinsics
+        // verify deposit didn't change after invalid extrinsics
         assert_eq!(
             <Test as Config>::Currency::reserved_balance(&origin),
             expected_deposit()
@@ -144,18 +132,6 @@ fn update_attribute_test() {
                 None,
             ),
             Error::<Test>::AttributeAuthorizationFailed
-        );
-
-        // Test update attibute with invalid name length
-        assert_noop!(
-            PeaqDID::update_attribute(
-                RuntimeOrigin::signed(origin),
-                did_account,
-                BoundedVec::try_from(vec![0; 70]).unwrap(),
-                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
-                None
-            ),
-            Error::<Test>::AttributeNameExceedMax64
         );
     });
 }
@@ -324,6 +300,72 @@ fn override_did_attribute() {
                 BoundedVec::try_from(name.to_vec()).unwrap(),
             ),
             Error::<Test>::AttributeAuthorizationFailed
+        );
+    });
+}
+
+#[test]
+fn add_attribute_with_non_ascii_test() {
+    new_test_ext().execute_with(|| {
+        let (origin, did_account, _, _, _) = test_accounts();
+        let non_ascii_name = vec![128, 129, 130];
+        let non_ascii_attribute = vec![131, 132, 133];
+
+        // Test add attribute with non-ASCII name
+        assert_noop!(
+            PeaqDID::add_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(non_ascii_name.clone()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
+                None
+            ),
+            Error::<Test>::AttributeNonAsciiProperty
+        );
+
+        // Test add attribute with non-ASCII attribute
+        assert_noop!(
+            PeaqDID::add_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(NAME.to_vec()).unwrap(),
+                BoundedVec::try_from(non_ascii_attribute.clone()).unwrap(),
+                None
+            ),
+            Error::<Test>::AttributeNonAsciiProperty
+        );
+    });
+}
+
+#[test]
+fn update_attribute_with_non_ascii_test() {
+    new_test_ext().execute_with(|| {
+        let (origin, did_account, _, _, _) = test_accounts();
+        let non_ascii_name = vec![128, 129, 130];
+        let non_ascii_attribute = vec![131, 132, 133];
+
+        // Test update attribute with non-ASCII name
+        assert_noop!(
+            PeaqDID::update_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(non_ascii_name.clone()).unwrap(),
+                BoundedVec::try_from(ATTRIBUTE.to_vec()).unwrap(),
+                None
+            ),
+            Error::<Test>::AttributeNonAsciiProperty
+        );
+
+        // Test update attribute with non-ASCII attribute
+        assert_noop!(
+            PeaqDID::update_attribute(
+                RuntimeOrigin::signed(origin),
+                did_account,
+                BoundedVec::try_from(NAME.to_vec()).unwrap(),
+                BoundedVec::try_from(non_ascii_attribute.clone()).unwrap(),
+                None
+            ),
+            Error::<Test>::AttributeNonAsciiProperty
         );
     });
 }

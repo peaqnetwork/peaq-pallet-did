@@ -8,6 +8,7 @@ pub enum DidError {
     FailedUpdate,
     AlreadyExist,
     MaxBlockNumberExceeded,
+    NonAsciiProperty,
 }
 
 pub trait Did<AccountId, BlockNumber, Moment> {
