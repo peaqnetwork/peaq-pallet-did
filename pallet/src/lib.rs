@@ -40,8 +40,8 @@ pub mod pallet {
     use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
 
-    pub(super) const MAX_NAME_SIZE: usize = 64;
-    pub(super) const MAX_VALUE_SIZE: usize = 2560;
+    pub const MAX_NAME_SIZE: usize = 64;
+    pub const MAX_VALUE_SIZE: usize = 2560;
 
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
     pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
