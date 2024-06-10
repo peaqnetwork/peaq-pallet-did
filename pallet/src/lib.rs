@@ -304,13 +304,8 @@ pub mod pallet {
     }
 
     // implements the Did trait to satisfied the required methods
-    impl<T: Config>
-        Did<
-            T::AccountId,
-            T::BlockNumber,
-            <<T as Config>::Time as MomentTime>::Moment,
-            BoundedVec<u8, T::BoundedDataLen>,
-        > for Pallet<T>
+    impl<T: Config> Did<T::AccountId, T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>
+        for Pallet<T>
     {
         fn is_owner(
             owner: &T::AccountId,
