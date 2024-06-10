@@ -1,4 +1,4 @@
-use crate::{did::Did, Config};
+use crate::{did::Did, Config, MAX_VALUE_SIZE};
 use crate::{mock::*, Error};
 use codec::MaxEncodedLen;
 use frame_support::{assert_noop, assert_ok, BoundedVec};
@@ -9,7 +9,7 @@ pub(crate) const ATTRIBUTE: &[u8] = b"did:pq:1234567890";
 
 fn expected_deposit() -> Balance {
     (DEPOSIT_PER_BYTE
-        * ((BOUNDED_DATA_LEN * 2)
+        * ((MAX_VALUE_SIZE * 2) as u32
             + Moment::max_encoded_len() as u32
             + AccountId::max_encoded_len() as u32) as Balance)
         + DEPOSIT_BASE

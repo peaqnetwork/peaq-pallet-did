@@ -49,6 +49,8 @@ pub mod pallet {
     pub type ReserveIdentifierOf<T> = <<T as Config>::Currency as NamedReservableCurrency<
         <T as frame_system::Config>::AccountId,
     >>::ReserveIdentifier;
+    pub type BoundedVecValue = BoundedVec<u8, ConstU32<{ MAX_VALUE_SIZE as u32 }>>;
+    pub type BoundedVecName = BoundedVec<u8, ConstU32<{ MAX_NAME_SIZE as u32 }>>;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
     #[pallet::config]
@@ -59,9 +61,6 @@ pub mod pallet {
         type Time: MomentTime;
         /// Weight information for extrinsics in this pallet.
         type WeightInfo: WeightInfo;
-
-        #[pallet::constant]
-        type BoundedDataLen: Get<u32>;
 
         #[pallet::constant]
         type StorageDepositBase: Get<BalanceOf<Self>>;
@@ -86,8 +85,8 @@ pub mod pallet {
         AttributeAdded(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, ConstU32<64>>,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVecName,
+            BoundedVecValue,
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute is read successfully
@@ -96,12 +95,12 @@ pub mod pallet {
         AttributeUpdated(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, ConstU32<64>>,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVecName,
+            BoundedVecValue,
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
-        AttributeRemoved(T::AccountId, T::AccountId, BoundedVec<u8, ConstU32<64>>),
+        AttributeRemoved(T::AccountId, T::AccountId, BoundedVecName),
     }
 
     #[pallet::error]
@@ -170,8 +169,8 @@ pub mod pallet {
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
-            value: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVecName,
+            value: BoundedVecValue,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -214,8 +213,8 @@ pub mod pallet {
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
-            value: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVecName,
+            value: BoundedVecValue,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -250,7 +249,7 @@ pub mod pallet {
         pub fn read_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
+            name: BoundedVecName,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -273,7 +272,7 @@ pub mod pallet {
         pub fn remove_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
+            name: BoundedVecName,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -496,7 +495,7 @@ pub mod pallet {
         /// was Attribute struct to change in the future, this function would be modified also
         pub fn deposit_amount() -> BalanceOf<T> {
             // see pub struct Attribute
-            let attribute_size = (T::BoundedDataLen::get() * 2) as usize
+            let attribute_size = MAX_VALUE_SIZE * 2
                 + T::AccountId::max_encoded_len()
                 + TimeOf::<T>::max_encoded_len();
 
