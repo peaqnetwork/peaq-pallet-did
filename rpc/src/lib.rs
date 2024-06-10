@@ -24,12 +24,14 @@ pub struct RPCAttribute<BlockNumber, Moment> {
     pub created: Moment,
 }
 
-impl<BlockNumber, Moment> From<Attribute<BlockNumber, Moment>>
+impl<BlockNumber, Moment, BoundedVecT> From<Attribute<BlockNumber, Moment, BoundedVecT>>
     for RPCAttribute<BlockNumber, Moment>
+where
+    BoundedVecT: Into<Bytes>,
 {
-    fn from(item: Attribute<BlockNumber, Moment>) -> Self {
+    fn from(item: Attribute<BlockNumber, Moment, BoundedVecT>) -> Self {
         RPCAttribute {
-            name: item.name.into(),
+            name: item.name.to_vec().into(),
             value: item.value.into(),
             validity: item.validity,
             created: item.created,
@@ -38,7 +40,7 @@ impl<BlockNumber, Moment> From<Attribute<BlockNumber, Moment>>
 }
 
 #[rpc(client, server)]
-pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
+pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment, BoundedVecT> {
     #[method(name = "peaqdid_readAttribute")]
     fn read_attribute(
         &self,
@@ -77,15 +79,18 @@ impl From<Error> for i32 {
 }
 
 #[async_trait]
-impl<C, Block, AccountId, BlockNumber, Moment>
-    PeaqDIDApiServer<<Block as BlockT>::Hash, AccountId, BlockNumber, Moment> for PeaqDID<C, Block>
+impl<C, Block, AccountId, BlockNumber, Moment, BoundedVecT>
+    PeaqDIDApiServer<<Block as BlockT>::Hash, AccountId, BlockNumber, Moment, BoundedVecT>
+    for PeaqDID<C, Block>
 where
     Block: BlockT,
     C: Send + Sync + 'static + ProvideRuntimeApi<Block> + HeaderBackend<Block>,
-    C::Api: PeaqDIDRuntimeApi<Block, AccountId, BlockNumber, Moment>,
+    C::Api: PeaqDIDRuntimeApi<Block, AccountId, BlockNumber, Moment, BoundedVecT>,
     AccountId: Codec,
     BlockNumber: Codec,
     Moment: Codec,
+    BoundedVecT: Codec,
+    sp_core::Bytes: From<BoundedVecT>,
 {
     fn read_attribute(
         &self,

@@ -40,6 +40,9 @@ pub mod pallet {
     use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
 
+    pub(super) const MAX_NAME_SIZE: usize = 64;
+    pub(super) const MAX_VALUE_SIZE: usize = 2560;
+
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
     pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
     pub type TimeOf<T> = <<T as Config>::Time as MomentTime>::Moment;
@@ -88,7 +91,7 @@ pub mod pallet {
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute is read successfully
-        AttributeRead(Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>),
+        AttributeRead(AttributeOf<T>),
         /// Event emitted when an attribute has been updated. [who, did_account, name, validity]
         AttributeUpdated(
             T::AccountId,
@@ -140,18 +143,12 @@ pub mod pallet {
     }
 
     #[pallet::pallet]
-    #[pallet::without_storage_info]
     pub struct Pallet<T>(_);
 
     #[pallet::storage]
     #[pallet::getter(fn attribute_of)]
-    pub(super) type AttributeStore<T: Config> = StorageMap<
-        _,
-        Blake2_128Concat,
-        [u8; 32],
-        Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>,
-        ValueQuery,
-    >;
+    pub(super) type AttributeStore<T: Config> =
+        StorageMap<_, Blake2_128Concat, [u8; 32], AttributeOf<T>, ValueQuery>;
 
     #[pallet::storage]
     #[pallet::getter(fn owner_of)]
@@ -183,7 +180,10 @@ pub mod pallet {
             let sender = ensure_signed(origin)?;
 
             // Verify that the name len is 64 max
-            ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+            ensure!(
+                name.len() <= MAX_NAME_SIZE,
+                Error::<T>::AttributeNameExceedMax64
+            );
 
             T::Currency::reserve_named(
                 &T::ReserveIdentifier::get(),
@@ -224,7 +224,10 @@ pub mod pallet {
             let sender = ensure_signed(origin)?;
 
             // Verify that the name len is 64 max
-            ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+            ensure!(
+                name.len() <= MAX_NAME_SIZE,
+                Error::<T>::AttributeNameExceedMax64
+            );
 
             match Self::update(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
@@ -278,7 +281,10 @@ pub mod pallet {
             let sender = ensure_signed(origin)?;
 
             // Verify that the name len is 64 max
-            ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+            ensure!(
+                name.len() <= MAX_NAME_SIZE,
+                Error::<T>::AttributeNameExceedMax64
+            );
 
             T::Currency::unreserve_named(
                 &T::ReserveIdentifier::get(),
@@ -298,8 +304,13 @@ pub mod pallet {
     }
 
     // implements the Did trait to satisfied the required methods
-    impl<T: Config> Did<T::AccountId, T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>
-        for Pallet<T>
+    impl<T: Config>
+        Did<
+            T::AccountId,
+            T::BlockNumber,
+            <<T as Config>::Time as MomentTime>::Moment,
+            BoundedVec<u8, T::BoundedDataLen>,
+        > for Pallet<T>
     {
         fn is_owner(
             owner: &T::AccountId,
@@ -352,10 +363,19 @@ pub mod pallet {
                 Ok(validity) => validity,
                 Err(e) => return Err(e),
             };
+            let bounded_name = match BoundedVec::try_from(name.to_vec()) {
+                Ok(name) => name,
+                Err(_) => return Err(DidError::NameExceedMaxChar),
+            };
+
+            let value = match BoundedVec::try_from(value.to_vec()) {
+                Ok(value) => value,
+                Err(_) => return Err(DidError::NameExceedMaxChar),
+            };
 
             let new_attribute = Attribute {
-                name: name.to_vec(),
-                value: value.to_vec(),
+                name: bounded_name,
+                value: value,
                 validity,
                 created: now_timestamp,
             };
@@ -400,7 +420,12 @@ pub mod pallet {
                 Some(mut attr) => {
                     let id = Self::get_hashed_key_for_attr(did_account, name);
 
-                    attr.value = value.to_vec();
+                    let value = match BoundedVec::try_from(value.to_vec()) {
+                        Ok(value) => value,
+                        Err(_) => return Err(DidError::NameExceedMaxChar),
+                    };
+
+                    attr.value = value;
                     attr.validity = validity;
 
                     <AttributeStore<T>>::mutate(id, |a| *a = attr);
@@ -411,11 +436,7 @@ pub mod pallet {
         }
 
         // Fetch an attribute from a did
-        fn read(
-            did_account: &T::AccountId,
-            name: &[u8],
-        ) -> Option<Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>>
-        {
+        fn read(did_account: &T::AccountId, name: &[u8]) -> Option<AttributeOf<T>> {
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
             if <AttributeStore<T>>::contains_key(id) {
