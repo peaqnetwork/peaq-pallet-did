@@ -29,8 +29,8 @@ impl<BlockNumber, Moment> From<Attribute<BlockNumber, Moment>>
 {
     fn from(item: Attribute<BlockNumber, Moment>) -> Self {
         RPCAttribute {
-            name: item.name.into(),
-            value: item.value.into(),
+            name: item.name.to_vec().into(),
+            value: item.value.to_vec().into(),
             validity: item.validity,
             created: item.created,
         }

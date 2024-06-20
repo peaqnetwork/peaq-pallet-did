@@ -40,12 +40,17 @@ pub mod pallet {
     use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
 
+    pub const MAX_NAME_SIZE: usize = 64;
+    pub const MAX_VALUE_SIZE: usize = 2560;
+
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
     pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
     pub type TimeOf<T> = <<T as Config>::Time as MomentTime>::Moment;
     pub type ReserveIdentifierOf<T> = <<T as Config>::Currency as NamedReservableCurrency<
         <T as frame_system::Config>::AccountId,
     >>::ReserveIdentifier;
+    pub type BoundedVecValue = BoundedVec<u8, ConstU32<{ MAX_VALUE_SIZE as u32 }>>;
+    pub type BoundedVecName = BoundedVec<u8, ConstU32<{ MAX_NAME_SIZE as u32 }>>;
 
     /// Configure the pallet by specifying the parameters and types on which it depends.
     #[pallet::config]
@@ -56,9 +61,6 @@ pub mod pallet {
         type Time: MomentTime;
         /// Weight information for extrinsics in this pallet.
         type WeightInfo: WeightInfo;
-
-        #[pallet::constant]
-        type BoundedDataLen: Get<u32>;
 
         #[pallet::constant]
         type StorageDepositBase: Get<BalanceOf<Self>>;
@@ -83,22 +85,22 @@ pub mod pallet {
         AttributeAdded(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, ConstU32<64>>,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVecName,
+            BoundedVecValue,
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute is read successfully
-        AttributeRead(Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>),
+        AttributeRead(AttributeOf<T>),
         /// Event emitted when an attribute has been updated. [who, did_account, name, validity]
         AttributeUpdated(
             T::AccountId,
             T::AccountId,
-            BoundedVec<u8, ConstU32<64>>,
-            BoundedVec<u8, T::BoundedDataLen>,
+            BoundedVecName,
+            BoundedVecValue,
             Option<T::BlockNumber>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
-        AttributeRemoved(T::AccountId, T::AccountId, BoundedVec<u8, ConstU32<64>>),
+        AttributeRemoved(T::AccountId, T::AccountId, BoundedVecName),
     }
 
     #[pallet::error]
@@ -140,18 +142,12 @@ pub mod pallet {
     }
 
     #[pallet::pallet]
-    #[pallet::without_storage_info]
     pub struct Pallet<T>(_);
 
     #[pallet::storage]
     #[pallet::getter(fn attribute_of)]
-    pub(super) type AttributeStore<T: Config> = StorageMap<
-        _,
-        Blake2_128Concat,
-        [u8; 32],
-        Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>,
-        ValueQuery,
-    >;
+    pub(super) type AttributeStore<T: Config> =
+        StorageMap<_, Blake2_128Concat, [u8; 32], AttributeOf<T>, ValueQuery>;
 
     #[pallet::storage]
     #[pallet::getter(fn owner_of)]
@@ -173,8 +169,8 @@ pub mod pallet {
         pub fn add_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
-            value: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVecName,
+            value: BoundedVecValue,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -183,7 +179,10 @@ pub mod pallet {
             let sender = ensure_signed(origin)?;
 
             // Verify that the name len is 64 max
-            ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+            ensure!(
+                name.len() <= MAX_NAME_SIZE,
+                Error::<T>::AttributeNameExceedMax64
+            );
 
             T::Currency::reserve_named(
                 &T::ReserveIdentifier::get(),
@@ -214,8 +213,8 @@ pub mod pallet {
         pub fn update_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
-            value: BoundedVec<u8, T::BoundedDataLen>,
+            name: BoundedVecName,
+            value: BoundedVecValue,
             valid_for: Option<T::BlockNumber>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
@@ -224,7 +223,10 @@ pub mod pallet {
             let sender = ensure_signed(origin)?;
 
             // Verify that the name len is 64 max
-            ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+            ensure!(
+                name.len() <= MAX_NAME_SIZE,
+                Error::<T>::AttributeNameExceedMax64
+            );
 
             match Self::update(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
@@ -247,7 +249,7 @@ pub mod pallet {
         pub fn read_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
+            name: BoundedVecName,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -270,7 +272,7 @@ pub mod pallet {
         pub fn remove_attribute(
             origin: OriginFor<T>,
             did_account: T::AccountId,
-            name: BoundedVec<u8, ConstU32<64>>,
+            name: BoundedVecName,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -278,7 +280,10 @@ pub mod pallet {
             let sender = ensure_signed(origin)?;
 
             // Verify that the name len is 64 max
-            ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
+            ensure!(
+                name.len() <= MAX_NAME_SIZE,
+                Error::<T>::AttributeNameExceedMax64
+            );
 
             T::Currency::unreserve_named(
                 &T::ReserveIdentifier::get(),
@@ -352,10 +357,19 @@ pub mod pallet {
                 Ok(validity) => validity,
                 Err(e) => return Err(e),
             };
+            let bounded_name = match BoundedVec::try_from(name.to_vec()) {
+                Ok(name) => name,
+                Err(_) => return Err(DidError::NameExceedMaxChar),
+            };
+
+            let value = match BoundedVec::try_from(value.to_vec()) {
+                Ok(value) => value,
+                Err(_) => return Err(DidError::NameExceedMaxChar),
+            };
 
             let new_attribute = Attribute {
-                name: name.to_vec(),
-                value: value.to_vec(),
+                name: bounded_name,
+                value: value,
                 validity,
                 created: now_timestamp,
             };
@@ -400,7 +414,12 @@ pub mod pallet {
                 Some(mut attr) => {
                     let id = Self::get_hashed_key_for_attr(did_account, name);
 
-                    attr.value = value.to_vec();
+                    let value = match BoundedVec::try_from(value.to_vec()) {
+                        Ok(value) => value,
+                        Err(_) => return Err(DidError::NameExceedMaxChar),
+                    };
+
+                    attr.value = value;
                     attr.validity = validity;
 
                     <AttributeStore<T>>::mutate(id, |a| *a = attr);
@@ -411,11 +430,7 @@ pub mod pallet {
         }
 
         // Fetch an attribute from a did
-        fn read(
-            did_account: &T::AccountId,
-            name: &[u8],
-        ) -> Option<Attribute<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>>
-        {
+        fn read(did_account: &T::AccountId, name: &[u8]) -> Option<AttributeOf<T>> {
             let id = Self::get_hashed_key_for_attr(did_account, name);
 
             if <AttributeStore<T>>::contains_key(id) {
@@ -480,7 +495,7 @@ pub mod pallet {
         /// was Attribute struct to change in the future, this function would be modified also
         pub fn deposit_amount() -> BalanceOf<T> {
             // see pub struct Attribute
-            let attribute_size = (T::BoundedDataLen::get() * 2) as usize
+            let attribute_size = MAX_VALUE_SIZE * 2
                 + T::AccountId::max_encoded_len()
                 + TimeOf::<T>::max_encoded_len();
 

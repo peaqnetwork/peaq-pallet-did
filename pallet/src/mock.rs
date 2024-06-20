@@ -17,7 +17,6 @@ pub(crate) type Moment = u64;
 pub(crate) const EXISTENTIAL_DEPOSIT: Balance = 2;
 pub(crate) const DEPOSIT_BASE: Balance = 100;
 pub(crate) const DEPOSIT_PER_BYTE: Balance = 2;
-pub(crate) const BOUNDED_DATA_LEN: u32 = 2560;
 
 // Configure a mock runtime to test the pallet.
 frame_support::construct_runtime!(
@@ -68,7 +67,6 @@ impl system::Config for Test {
 
 parameter_types! {
     pub const MinimumPeriod: u64 = 5;
-    pub const BoundedDataLen: u32 = BOUNDED_DATA_LEN;
 }
 
 impl pallet_timestamp::Config for Test {
@@ -110,7 +108,6 @@ impl peaq_did::Config for Test {
     type RuntimeEvent = RuntimeEvent;
     type Time = pallet_timestamp::Pallet<Test>;
     type WeightInfo = peaq_did::weights::WeightInfo<Test>;
-    type BoundedDataLen = BoundedDataLen;
     type StorageDepositBase = StorageDepositBase;
     type StorageDepositPerByte = StorageDepositPerByte;
     type Currency = Balances;
