@@ -1,8 +1,8 @@
 use crate::{did::Did, Config};
 use crate::{mock::*, Error};
-use parity_scale_codec::MaxEncodedLen;
 use frame_support::{assert_noop, assert_ok, BoundedVec};
 use hex_literal::hex;
+use parity_scale_codec::MaxEncodedLen;
 
 pub(crate) const NAME: &[u8] = b"id";
 pub(crate) const ATTRIBUTE: &[u8] = b"did:pq:1234567890";

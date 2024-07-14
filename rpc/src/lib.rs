@@ -2,10 +2,14 @@ use std::convert::From;
 use std::sync::Arc;
 
 use jsonrpsee::{
-    core::{async_trait, Error as JsonRpseeError, RpcResult},
+    core::{async_trait, RpcResult},
     proc_macros::rpc,
-    types::error::{CallError, ErrorObject},
+    types::{
+        error::{INTERNAL_ERROR_CODE, INTERNAL_ERROR_MSG},
+        ErrorObjectOwned,
+    },
 };
+
 use parity_scale_codec::Codec;
 use parity_scale_codec::{Decode, Encode};
 use peaq_pallet_did::structs::Attribute;
@@ -96,12 +100,15 @@ where
         let api = self.client.runtime_api();
         api.read(at, did_account, name.to_vec())
             .map(|o| o.map(RPCAttribute::from))
-            .map_err(|e| {
-                JsonRpseeError::Call(CallError::Custom(ErrorObject::owned(
-                    Error::RuntimeError.into(),
-                    "Unable to get value.",
-                    Some(format!("{:?}", e)),
-                )))
-            })
+            .map_err(|err| internal_err(err.to_string()))
     }
+}
+
+// This bit cribbed from frontier.
+pub fn internal_err<T: ToString>(message: T) -> ErrorObjectOwned {
+    ErrorObjectOwned::owned(
+        INTERNAL_ERROR_CODE,
+        INTERNAL_ERROR_MSG,
+        Some(message.to_string()),
+    )
 }
