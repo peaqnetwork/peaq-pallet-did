@@ -1,12 +1,35 @@
 [workspace.package]
 authors = ["EoTLabs <info@eotlabs.io>"]
 edition = "2021"
-version = "0.1.0"
+version = "0.1.1"
 description = "A pallet that handles peaq DID managment on peaq network."
 homepage = "https://peaq.network/"
 license = "Apache-2.0"
 publish = false
 repository = "https://github.com/peaqnetwork/peaq-pallet-did/"
+
+[workspace.dependencies]
+parity-scale-codec = { version = "3.6.12", default-features = false }
+frame-benchmarking = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+frame-support = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+frame-system = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+scale-info = { version = "2.0.1", default-features = false }
+sp-runtime = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+sp-core = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+sp-rpc = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+sp-io = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+
+sp-std = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+pallet-timestamp = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+pallet-balances = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+num-traits = { version = "0.2.18", default-features = false }
+
+serde = { version = "1.0.136" }
+serde_json = { version = "1.0" }
+
+sp-blockchain = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+sp-api = { git = "https://github.com/peaqnetwork/polkadot-sdk", branch = "peaq-polkadot-v1.7.2", default-features = false }
+jsonrpsee = { version = "0.20.3" }
 
 [workspace]
 members = [
