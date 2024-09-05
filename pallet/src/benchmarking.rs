@@ -46,7 +46,7 @@ benchmarks! {
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
 
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
-        let new_attribute = BoundedVec::<u8, T::BoundedDataLen>::try_from([1; MAX_ATTRIBUTE_BYTES_LEN as usize].to_vec()).unwrap();
+        let new_attribute = BoundedVecValue::try_from([1; MAX_ATTRIBUTE_BYTES_LEN as usize].to_vec()).unwrap();
         let name = BoundedVec::try_from(vec![1; 64]).unwrap();
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
@@ -79,8 +79,8 @@ benchmarks! {
     }: _(RawOrigin::Signed(caller.clone()), did_account, name.clone())
     verify {
         let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
-            name: vec![1; 64],
-            value: ATTRITUBE_BYTES.to_vec(),
+            name: BoundedVec::try_from(vec![1; 64]).unwrap(),
+            value: BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).unwrap(),
             validity: T::BlockNumber::max_value(),
             created: T::Time::now(),
         };
