@@ -1,16 +1,14 @@
 use crate::{Config, MomentTime};
 use crate::{MAX_NAME_SIZE, MAX_VALUE_SIZE};
-use codec::{Decode, Encode};
 use frame_support::pallet_prelude::ConstU32;
 use frame_support::pallet_prelude::MaxEncodedLen;
 use frame_support::BoundedVec;
+use frame_system::pallet_prelude::BlockNumberFor;
+use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 use sp_core::RuntimeDebug;
 
-pub type AttributeOf<T> = Attribute<
-    <T as frame_system::Config>::BlockNumber,
-    <<T as Config>::Time as MomentTime>::Moment,
->;
+pub type AttributeOf<T> = Attribute<BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>;
 /// Attributes of a DID.
 #[derive(
     PartialEq,

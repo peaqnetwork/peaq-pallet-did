@@ -87,7 +87,7 @@ pub mod pallet {
             T::AccountId,
             BoundedVecName,
             BoundedVecValue,
-            Option<T::BlockNumber>,
+            Option<BlockNumberFor<T>>,
         ),
         /// Event emitted when an attribute is read successfully
         AttributeRead(AttributeOf<T>),
@@ -97,7 +97,7 @@ pub mod pallet {
             T::AccountId,
             BoundedVecName,
             BoundedVecValue,
-            Option<T::BlockNumber>,
+            Option<BlockNumberFor<T>>,
         ),
         /// Event emitted when an attribute has been deleted. [who, did_acount name]
         AttributeRemoved(T::AccountId, T::AccountId, BoundedVecName),
@@ -171,7 +171,7 @@ pub mod pallet {
             did_account: T::AccountId,
             name: BoundedVecName,
             value: BoundedVecValue,
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -215,7 +215,7 @@ pub mod pallet {
             did_account: T::AccountId,
             name: BoundedVecName,
             value: BoundedVecValue,
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> DispatchResult {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
@@ -303,7 +303,8 @@ pub mod pallet {
     }
 
     // implements the Did trait to satisfied the required methods
-    impl<T: Config> Did<T::AccountId, T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment>
+    impl<T: Config>
+        Did<T::AccountId, BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>
         for Pallet<T>
     {
         fn is_owner(
@@ -335,7 +336,7 @@ pub mod pallet {
             did_account: &T::AccountId,
             name: &[u8],
             value: &[u8],
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> Result<(), DidError> {
             // Check if all characters are ascii to avoid UTF8 phishing attacks
             if !name.is_ascii() || !value.is_ascii() {
@@ -391,7 +392,7 @@ pub mod pallet {
             did_account: &T::AccountId,
             name: &[u8],
             value: &[u8],
-            valid_for: Option<T::BlockNumber>,
+            valid_for: Option<BlockNumberFor<T>>,
         ) -> Result<(), DidError> {
             // Check if all characters are ascii to avoid UTF8 phishing attacks
             if !name.is_ascii() || !value.is_ascii() {
@@ -465,13 +466,13 @@ pub mod pallet {
         }
 
         fn validate_block_number(
-            valid_for: Option<T::BlockNumber>,
-        ) -> Result<T::BlockNumber, DidError> {
-            let max_block: T::BlockNumber = Bounded::max_value();
+            valid_for: Option<BlockNumberFor<T>>,
+        ) -> Result<BlockNumberFor<T>, DidError> {
+            let max_block: BlockNumberFor<T> = Bounded::max_value();
 
-            let validity: T::BlockNumber = match valid_for {
+            let validity: BlockNumberFor<T> = match valid_for {
                 Some(blocks) => {
-                    let now_block_number: T::BlockNumber =
+                    let now_block_number: BlockNumberFor<T> =
                         <frame_system::Pallet<T>>::block_number();
 
                     // check for addition values overflow
