@@ -48,7 +48,7 @@ pub trait PeaqDIDApi<BlockHash, AccountId, BlockNumber, Moment> {
         &self,
         did_account: AccountId,
         name: Bytes,
-        at: BlockHash,
+        at: Option<BlockHash>,
     ) -> RpcResult<Option<RPCAttribute<BlockNumber, Moment>>>;
 }
 
@@ -95,10 +95,11 @@ where
         &self,
         did_account: AccountId,
         name: Bytes,
-        at: <Block as BlockT>::Hash,
+        at: Option<<Block as BlockT>::Hash>,
     ) -> RpcResult<Option<RPCAttribute<BlockNumber, Moment>>> {
         let api = self.client.runtime_api();
-        api.read(at, did_account, name.to_vec())
+        let block_hash = at.unwrap_or_else(|| self.client.info().best_hash);
+        api.read(block_hash, did_account, name.to_vec())
             .map(|o| o.map(RPCAttribute::from))
             .map_err(|err| internal_err(err.to_string()))
     }
