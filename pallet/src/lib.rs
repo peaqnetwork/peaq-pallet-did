@@ -370,7 +370,7 @@ pub mod pallet {
 
             let new_attribute = Attribute {
                 name: bounded_name,
-                value: value,
+                value,
                 validity,
                 created: now_timestamp,
             };
