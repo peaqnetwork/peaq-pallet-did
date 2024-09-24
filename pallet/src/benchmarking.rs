@@ -10,6 +10,7 @@ use frame_system::{Pallet as System, RawOrigin};
 use num_traits::bounds::UpperBounded;
 use sp_runtime::BoundedVec;
 use sp_std::vec;
+use frame_system::pallet_prelude::BlockNumberFor;
 
 /// Assert that the last event equals the provided one.
 fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
@@ -20,16 +21,16 @@ const MAX_ATTRIBUTE_BYTES_LEN: u32 = 2560;
 const CALLER_ACCOUNT_STR: &str = "Iredia1";
 const DID_ACCOUNT_STR: &str = "Iredia2";
 const ATTRITUBE_BYTES: &[u8; MAX_ATTRIBUTE_BYTES_LEN as usize] =
-    &[0; MAX_ATTRIBUTE_BYTES_LEN as usize];
+    &[65; MAX_ATTRIBUTE_BYTES_LEN as usize];
 
 benchmarks! {
     add_attribute {
         let i in 0 .. MAX_ATTRIBUTE_BYTES_LEN;
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
-
+        let _ = <T as Config>::Currency::make_free_balance_be(&caller, BalanceOf::<T>::max_value());
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
-        let new_attribute = BoundedVec::try_from([1; MAX_ATTRIBUTE_BYTES_LEN as usize].to_vec()).expect("Length is within bounds");
-        let name = BoundedVec::try_from(vec![1; 64]).unwrap();
+        let new_attribute = BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).expect("Length is within bounds");
+        let name = BoundedVec::try_from(vec![65; 64]).unwrap();
     }: _(RawOrigin::Signed(caller.clone()), did_account.clone(), name.clone(), new_attribute, None)
     verify {
         assert_last_event::<T>(Event::<T>::AttributeAdded(
@@ -44,9 +45,9 @@ benchmarks! {
     update_attribute {
         let i in 0 .. MAX_ATTRIBUTE_BYTES_LEN;
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
-
+        let _ = <T as Config>::Currency::make_free_balance_be(&caller, BalanceOf::<T>::max_value());
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
-        let new_attribute = BoundedVecValue::try_from([1; MAX_ATTRIBUTE_BYTES_LEN as usize].to_vec()).unwrap();
+        let new_attribute = BoundedVecValue::try_from(ATTRITUBE_BYTES.to_vec()).unwrap();
         let name = BoundedVec::try_from(vec![1; 64]).unwrap();
         <DID<T>>::add_attribute(
             RawOrigin::Signed(caller.clone()).into(),
@@ -67,7 +68,7 @@ benchmarks! {
 
     read_attribute {
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
-
+        let _ = <T as Config>::Currency::make_free_balance_be(&caller, BalanceOf::<T>::max_value());
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
         let name = BoundedVec::try_from(vec![1; 64]).unwrap();
         <DID<T>>::add_attribute(
@@ -78,10 +79,10 @@ benchmarks! {
             None)?;
     }: _(RawOrigin::Signed(caller.clone()), did_account, name.clone())
     verify {
-        let read_attr = Attribute::<T::BlockNumber, <<T as Config>::Time as MomentTime>::Moment> {
+        let read_attr = Attribute::<BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment> {
             name: BoundedVec::try_from(vec![1; 64]).unwrap(),
             value: BoundedVec::try_from(ATTRITUBE_BYTES.to_vec()).unwrap(),
-            validity: T::BlockNumber::max_value(),
+            validity: BlockNumberFor::<T>::max_value(),
             created: T::Time::now(),
         };
         assert_last_event::<T>(Event::<T>::AttributeRead(read_attr).into());
@@ -89,6 +90,7 @@ benchmarks! {
 
     remove_attribute {
         let caller : T::AccountId = account(CALLER_ACCOUNT_STR, 0, 0);
+        let _ = <T as Config>::Currency::make_free_balance_be(&caller, BalanceOf::<T>::max_value());
         let did_account : T::AccountId = account(DID_ACCOUNT_STR, 0, 0);
         let name = BoundedVec::try_from(vec![1; 64]).unwrap();
 
@@ -112,7 +114,7 @@ benchmarks! {
 #[cfg(test)]
 mod tests {
     use crate::mock;
-    use frame_support::sp_io::TestExternalities;
+    use sp_io::TestExternalities;
 
     pub fn new_test_ext() -> TestExternalities {
         mock::new_test_ext()
