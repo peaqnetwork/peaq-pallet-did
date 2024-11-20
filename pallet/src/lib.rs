@@ -187,11 +187,13 @@ pub mod pallet {
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
 
-            T::Currency::reserve_named(
-                &T::ReserveIdentifier::get(),
-                &sender,
-                Self::deposit_amount(),
-            )?;
+            /*
+             * T::Currency::reserve_named(
+             *     &T::ReserveIdentifier::get(),
+             *     &sender,
+             *     Self::deposit_amount(),
+             * )?;
+             */
 
             match Self::create(&sender, &did_account, &name, &value, valid_for) {
                 Ok(()) => {
@@ -206,7 +208,8 @@ pub mod pallet {
                 Err(e) => return Error::<T>::dispatch_error(e),
             };
 
-            Ok(())
+            // Should return the value more than the deposit amount
+            Ok((Self::deposit_amount()))
         }
 
         /// Update an existing attribute of a DID
