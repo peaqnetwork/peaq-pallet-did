@@ -39,6 +39,7 @@ pub mod pallet {
     use sp_io::hashing::blake2_256;
     use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
+    use frame_support::dispatch::PostDispatchInfo;
 
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
     pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
@@ -178,7 +179,7 @@ pub mod pallet {
             name: BoundedVec<u8, T::BoundedDataLen>,
             value: BoundedVec<u8, T::BoundedDataLen>,
             valid_for: Option<BlockNumberFor<T>>,
-        ) -> DispatchResult {
+        ) -> DispatchResultWithPostInfo {
             // Check that an extrinsic was signed and get the signer
             // This fn returns an error if the extrinsic is not signed
             // https://docs.substrate.io/v3/runtime/origins
@@ -205,11 +206,13 @@ pub mod pallet {
                         valid_for,
                     ));
                 }
-                Err(e) => return Error::<T>::dispatch_error(e),
+                Err(e) => Error::<T>::dispatch_error(e)?,
             };
-
             // Should return the value more than the deposit amount
-            Ok((Self::deposit_amount()))
+            Ok(PostDispatchInfo {
+                actual_weight: Some(Weight::from_parts(10000000000000 as u64,  0)), // Replace with actual weight.
+                pays_fee: Pays::Yes,         // Pays::No if the transaction does not pay fees.
+            })
         }
 
         /// Update an existing attribute of a DID
