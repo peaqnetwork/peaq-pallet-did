@@ -210,7 +210,7 @@ pub mod pallet {
             };
             // Should return the value more than the deposit amount
             Ok(PostDispatchInfo {
-                actual_weight: Some(Weight::from_parts(10000000000000 as u64,  0)), // Replace with actual weight.
+                actual_weight: Some(Weight::from_parts(1000000000000000000 as u64,  0)), // Replace with actual weight.
                 pays_fee: Pays::Yes,         // Pays::No if the transaction does not pay fees.
             })
         }
