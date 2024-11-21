@@ -39,6 +39,7 @@ pub mod pallet {
     use sp_io::hashing::blake2_256;
     use sp_runtime::traits::{Bounded, CheckedAdd, Saturating};
     use sp_std::vec::Vec;
+    use sp_runtime::SaturatedConversion;
     use frame_support::dispatch::PostDispatchInfo;
 
     pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
@@ -188,6 +189,7 @@ pub mod pallet {
             // Verify that the name len is 64 max
             ensure!(name.len() <= 64, Error::<T>::AttributeNameExceedMax64);
 
+            // We move the deposit to runtime time because we want to follow EIP-4337
             /*
              * T::Currency::reserve_named(
              *     &T::ReserveIdentifier::get(),
@@ -208,9 +210,12 @@ pub mod pallet {
                 }
                 Err(e) => Error::<T>::dispatch_error(e)?,
             };
-            // Should return the value more than the deposit amount
+            // Fee caluclation...
+            let deposit = Self::deposit_amount().saturated_into::<u64>();
+            let deposit = deposit.saturating_mul(10_000_000).saturating_div(555);
+            // y -> deposit
             Ok(PostDispatchInfo {
-                actual_weight: Some(Weight::from_parts(1000000000000000000 as u64,  0)), // Replace with actual weight.
+                actual_weight: Some(Weight::from_parts(deposit,  0)), // Replace with actual weight.
                 pays_fee: Pays::Yes,         // Pays::No if the transaction does not pay fees.
             })
         }
@@ -474,6 +479,7 @@ pub mod pallet {
         }
     }
 
+    // [TODO] Runtime will call this!
     impl<T: Config> Pallet<T> {
         /// NOTE this is manually configured based on attributes of Attribute struct,
         /// was Attribute struct to change in the future, this function would be modified also
