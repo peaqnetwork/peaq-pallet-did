@@ -215,7 +215,7 @@ pub mod pallet {
             let deposit = deposit.saturating_mul(10_000_000).saturating_div(555);
             // y -> deposit
             Ok(PostDispatchInfo {
-                actual_weight: Some(Weight::from_parts(deposit,  0)), // Replace with actual weight.
+                actual_weight: Some(Weight::from_parts(0,  0)), // Replace with actual weight.
                 pays_fee: Pays::Yes,         // Pays::No if the transaction does not pay fees.
             })
         }
@@ -479,11 +479,14 @@ pub mod pallet {
         }
     }
 
+    trait DepositAmount<T: Config> {
+        fn deposit_amount() -> BalanceOf<T>;
+    }
     // [TODO] Runtime will call this!
-    impl<T: Config> Pallet<T> {
+    impl<T: Config> DepositAmount<T> for Pallet<T> {
         /// NOTE this is manually configured based on attributes of Attribute struct,
         /// was Attribute struct to change in the future, this function would be modified also
-        pub fn deposit_amount() -> BalanceOf<T> {
+        fn deposit_amount() -> BalanceOf<T> {
             // see pub struct Attribute
             let attribute_size = (T::BoundedDataLen::get() * 2) as usize
                 + T::AccountId::max_encoded_len()
