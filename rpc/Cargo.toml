@@ -21,3 +21,4 @@ sp-core = { workspace = true }
 sp-rpc = { workspace = true }
 sp-runtime = { workspace = true }
 jsonrpsee = { workspace = true, features = ["client-core", "server", "macros"] }
+tower = { workspace = true, features = ["util"] }
