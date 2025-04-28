@@ -1,5 +1,5 @@
 use crate as peaq_did;
-use frame_support::parameter_types;
+use frame_support::{derive_impl, parameter_types};
 use frame_system as system;
 use sp_core::{sr25519, Pair, H256};
 use sp_runtime::{
@@ -59,6 +59,12 @@ impl system::Config for Test {
     type OnSetCode = ();
     type MaxConsumers = frame_support::traits::ConstU32<16>;
     type RuntimeTask = ();
+    type ExtensionsWeightInfo = ();
+    type SingleBlockMigrations = ();
+    type MultiBlockMigrator = ();
+    type PreInherents = ();
+    type PostInherents = ();
+    type PostTransactions = ();
 }
 
 parameter_types! {
@@ -73,26 +79,15 @@ impl pallet_timestamp::Config for Test {
 }
 
 parameter_types! {
-    pub const MaxLocks: u32 = 4;
-    pub const MaxReserves: u32 = 4;
     pub const ExistentialDeposit: Balance = EXISTENTIAL_DEPOSIT;
 }
 
+#[derive_impl(pallet_balances::config_preludes::TestDefaultConfig)]
 impl pallet_balances::Config for Test {
-    type MaxLocks = MaxLocks;
-    type MaxReserves = MaxReserves;
-    type ReserveIdentifier = [u8; 8];
     type Balance = Balance;
-    type RuntimeEvent = RuntimeEvent;
-    type DustRemoval = ();
     type ExistentialDeposit = ExistentialDeposit;
     type AccountStore = System;
-    type WeightInfo = ();
-    type FreezeIdentifier = ();
-    // type MaxHolds = ();
-    type MaxFreezes = ();
-    type RuntimeHoldReason = ();
-    type RuntimeFreezeReason = ();
+    type ReserveIdentifier = [u8; 8];
 }
 
 parameter_types! {
@@ -125,6 +120,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
             (acc2, 1400000000000000000000000000),
             (acc3, 1400000000000000000000000000),
         ],
+        ..Default::default()
     }
     .assimilate_storage(&mut storage)
     .ok();

@@ -32,7 +32,7 @@ fn add_attribute_test() {
 
         // correct storage deposit was deducted or not
         assert_eq!(
-            <Test as Config>::Currency::reserved_balance(&origin),
+            <Test as Config>::Currency::reserved_balance(origin),
             expected_deposit()
         );
 
@@ -62,7 +62,7 @@ fn add_attribute_test() {
 
         // verify deposit didn't change after invalid extrinsics
         assert_eq!(
-            <Test as Config>::Currency::reserved_balance(&origin),
+            <Test as Config>::Currency::reserved_balance(origin),
             expected_deposit()
         );
     });
@@ -85,7 +85,7 @@ fn update_attribute_test() {
 
         // correct storage deposit was deducted or not
         assert_eq!(
-            <Test as Config>::Currency::reserved_balance(&origin),
+            <Test as Config>::Currency::reserved_balance(origin),
             expected_deposit()
         );
 
@@ -183,7 +183,7 @@ fn remove_attribute_test() {
 
         // correct storage deposit was deducted or not
         assert_eq!(
-            <Test as Config>::Currency::reserved_balance(&origin),
+            <Test as Config>::Currency::reserved_balance(origin),
             expected_deposit()
         );
 
@@ -195,7 +195,7 @@ fn remove_attribute_test() {
         ));
 
         // correct storage deposit was deducted or not
-        assert_eq!(<Test as Config>::Currency::reserved_balance(&origin), 0);
+        assert_eq!(<Test as Config>::Currency::reserved_balance(origin), 0);
 
         // Test remove another owner did attribute
         assert_noop!(
