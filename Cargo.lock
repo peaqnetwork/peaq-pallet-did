@@ -1296,7 +1296,7 @@ dependencies = [
 [[package]]
 name = "frame-benchmarking"
 version = "28.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "frame-support",
  "frame-support-procedural",
@@ -1333,7 +1333,7 @@ dependencies = [
 [[package]]
 name = "frame-support"
 version = "28.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "aquamarine",
  "array-bytes",
@@ -1374,7 +1374,7 @@ dependencies = [
 [[package]]
 name = "frame-support-procedural"
 version = "23.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "Inflector",
  "cfg-expr",
@@ -1393,7 +1393,7 @@ dependencies = [
 [[package]]
 name = "frame-support-procedural-tools"
 version = "10.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "frame-support-procedural-tools-derive",
  "proc-macro-crate 3.1.0",
@@ -1405,7 +1405,7 @@ dependencies = [
 [[package]]
 name = "frame-support-procedural-tools-derive"
 version = "11.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1415,7 +1415,7 @@ dependencies = [
 [[package]]
 name = "frame-system"
 version = "28.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "cfg-if",
  "docify",
@@ -2469,7 +2469,7 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 [[package]]
 name = "pallet-balances"
 version = "28.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "docify",
  "frame-benchmarking",
@@ -2485,7 +2485,7 @@ dependencies = [
 [[package]]
 name = "pallet-timestamp"
 version = "27.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "docify",
  "frame-benchmarking",
@@ -3363,7 +3363,7 @@ dependencies = [
 [[package]]
 name = "sp-api"
 version = "26.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "hash-db",
  "log",
@@ -3384,7 +3384,7 @@ dependencies = [
 [[package]]
 name = "sp-api-proc-macro"
 version = "15.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "Inflector",
  "blake2",
@@ -3398,7 +3398,7 @@ dependencies = [
 [[package]]
 name = "sp-application-crypto"
 version = "30.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "parity-scale-codec",
  "scale-info",
@@ -3411,7 +3411,7 @@ dependencies = [
 [[package]]
 name = "sp-arithmetic"
 version = "23.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "integer-sqrt",
  "num-traits",
@@ -3443,7 +3443,7 @@ dependencies = [
 [[package]]
 name = "sp-blockchain"
 version = "28.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "futures",
  "log",
@@ -3461,7 +3461,7 @@ dependencies = [
 [[package]]
 name = "sp-consensus"
 version = "0.32.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "async-trait",
  "futures",
@@ -3476,7 +3476,7 @@ dependencies = [
 [[package]]
 name = "sp-core"
 version = "28.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "array-bytes",
  "bandersnatch_vrfs",
@@ -3542,7 +3542,7 @@ dependencies = [
 [[package]]
 name = "sp-crypto-hashing"
 version = "0.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3555,7 +3555,7 @@ dependencies = [
 [[package]]
 name = "sp-crypto-hashing-proc-macro"
 version = "0.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "quote",
  "sp-crypto-hashing",
@@ -3565,7 +3565,7 @@ dependencies = [
 [[package]]
 name = "sp-database"
 version = "10.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "kvdb",
  "parking_lot",
@@ -3574,7 +3574,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "14.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3594,7 +3594,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.25.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -3615,7 +3615,7 @@ dependencies = [
 [[package]]
 name = "sp-genesis-builder"
 version = "0.7.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "serde_json",
  "sp-api",
@@ -3626,7 +3626,7 @@ dependencies = [
 [[package]]
 name = "sp-inherents"
 version = "26.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "async-trait",
  "impl-trait-for-tuples",
@@ -3640,7 +3640,7 @@ dependencies = [
 [[package]]
 name = "sp-io"
 version = "30.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "bytes",
  "ed25519-dalek",
@@ -3665,7 +3665,7 @@ dependencies = [
 [[package]]
 name = "sp-keystore"
 version = "0.34.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "parity-scale-codec",
  "parking_lot",
@@ -3677,7 +3677,7 @@ dependencies = [
 [[package]]
 name = "sp-metadata-ir"
 version = "0.6.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "frame-metadata",
  "parity-scale-codec",
@@ -3688,7 +3688,7 @@ dependencies = [
 [[package]]
 name = "sp-panic-handler"
 version = "13.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "backtrace",
  "lazy_static",
@@ -3698,7 +3698,7 @@ dependencies = [
 [[package]]
 name = "sp-rpc"
 version = "26.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "rustc-hash",
  "serde",
@@ -3708,7 +3708,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime"
 version = "31.0.1"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "docify",
  "either",
@@ -3732,7 +3732,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "24.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -3769,7 +3769,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "17.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "Inflector",
  "expander",
@@ -3795,7 +3795,7 @@ dependencies = [
 [[package]]
 name = "sp-staking"
 version = "26.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "impl-trait-for-tuples",
  "parity-scale-codec",
@@ -3809,7 +3809,7 @@ dependencies = [
 [[package]]
 name = "sp-state-machine"
 version = "0.35.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "hash-db",
  "log",
@@ -3830,7 +3830,7 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "14.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 
 [[package]]
 name = "sp-std"
@@ -3840,7 +3840,7 @@ source = "git+https://github.com/paritytech/polkadot-sdk#eac2a22a4801e1539a97a7f
 [[package]]
 name = "sp-storage"
 version = "19.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -3865,7 +3865,7 @@ dependencies = [
 [[package]]
 name = "sp-timestamp"
 version = "26.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "async-trait",
  "parity-scale-codec",
@@ -3878,7 +3878,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "16.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "parity-scale-codec",
  "sp-std 14.0.0 (git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2)",
@@ -3901,7 +3901,7 @@ dependencies = [
 [[package]]
 name = "sp-trie"
 version = "29.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "ahash 0.8.6",
  "hash-db",
@@ -3925,7 +3925,7 @@ dependencies = [
 [[package]]
 name = "sp-version"
 version = "29.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -3942,7 +3942,7 @@ dependencies = [
 [[package]]
 name = "sp-version-proc-macro"
 version = "13.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "parity-scale-codec",
  "proc-macro2",
@@ -3953,7 +3953,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "20.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",
@@ -3976,7 +3976,7 @@ dependencies = [
 [[package]]
 name = "sp-weights"
 version = "27.0.0"
-source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#538d3a370b0f86d5687ee4924585575def12bd96"
+source = "git+https://github.com/peaqnetwork/polkadot-sdk?branch=peaq-polkadot-v1.7.2#41c15ca64d4d2990b4b166b91b029cbd8603f7d6"
 dependencies = [
  "bounded-collections",
  "parity-scale-codec",
