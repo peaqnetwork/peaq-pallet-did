@@ -6,11 +6,11 @@ use crate::structs::Attribute;
 #[allow(unused)]
 use crate::Pallet as DID;
 use frame_benchmarking::v1::{account, benchmarks, impl_benchmark_test_suite};
+use frame_system::pallet_prelude::BlockNumberFor;
 use frame_system::{Pallet as System, RawOrigin};
 use num_traits::bounds::UpperBounded;
 use sp_runtime::BoundedVec;
 use sp_std::vec;
-use frame_system::pallet_prelude::BlockNumberFor;
 
 /// Assert that the last event equals the provided one.
 fn assert_last_event<T: Config>(generic_event: <T as Config>::RuntimeEvent) {
