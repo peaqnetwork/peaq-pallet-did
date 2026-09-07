@@ -6,7 +6,6 @@ use frame_support::BoundedVec;
 use frame_system::pallet_prelude::BlockNumberFor;
 use parity_scale_codec::{Decode, DecodeWithMemTracking, Encode};
 use scale_info::TypeInfo;
-use sp_core::RuntimeDebug;
 
 pub type AttributeOf<T> = Attribute<BlockNumberFor<T>, <<T as Config>::Time as MomentTime>::Moment>;
 /// Attributes of a DID.
@@ -19,7 +18,7 @@ pub type AttributeOf<T> = Attribute<BlockNumberFor<T>, <<T as Config>::Time as M
     Encode,
     Decode,
     Default,
-    RuntimeDebug,
+    Debug,
     TypeInfo,
     MaxEncodedLen,
     DecodeWithMemTracking,
